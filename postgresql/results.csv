@@ -1,0 +1,5 @@
+id,first_name,last_name,gender,email,date_of_birth,country_of_birth,car_id,id,make,model,price
+2,Jane,Smith,Female,janesmith@example.com,1992-05-13,Russia,1,1,Land Rover,Sterling,87668.38
+1,John,Doe,Male,johndoe@example.com,1967-04-03,England,2,2,GMC,Acadia,17662.68
+4,Billy,Joan,Female,billyjoan@example.com,1988-11-11,Denmark,,,,,
+3,Billy,Bob,Male,,1955-12-31,United States,,,,,
