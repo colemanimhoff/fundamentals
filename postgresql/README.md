@@ -572,3 +572,9 @@ To run a function, run `SELECT` and the invoked function name. For example:
 `SELECT uuid_generate_v4();`
 
 One benefit of `UUID` as PKs is that it makes are data safer. It makes it harder for attackers to mine or database. For example, with an url of `users/1000`, the attacker can exploit all of the users from 1-100.
+
+Let's do a join on these new tables:
+
+`SELECT person.first_name, person.last_name, car.make, car.model FROM person LEFT JOIN car ON person.car_uuid = car.car_uuid;`
+
+Because these ids have the same column name, we can query using the `USING` key:
