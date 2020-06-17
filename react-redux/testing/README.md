@@ -81,3 +81,63 @@ Jest installs `JSDOM`, which is a JavaScript implementation of the DOM and imita
 `(value)` - the value we want to verify
 `mather statement` - designates how we want to inspect the 'subject'
 `expected value` - expected value, its what we want our 'subjeect' to be
+
+### Limiting Test Knowledge
+
+You want to limit tests knowledge of other components and you want them to know they simply exist
+
+### Enzyme
+
+Created by AirBnB to easily test React components
+
+Static Render
+
+- A function we can pass a component and renders an object that just contains the HTML of that component
+
+Shallow Render
+
+- A function that takes a component and renders an instance of that component, it's attributes, but not it's children
+
+Full DOM Render
+
+- A functions that takes a component and renders an instanst of that component, it's attributes, and all it's children as well as all attributes (onClick, etc)
+
+### beforeEach | afterEach
+
+Helper functions help reduce repetetive code. For example, a common dependancy or cleanup
+
+### Simulating events
+
+Find the element
+Simulate an event
+provide a fake event object
+force the component to update
+assert the values have changed
+
+`.simulate`
+allows us to mock an event
+
+When `setState` is called, the component is re-rendered asynchronously. This is an issue when it comes to testing, because we need to wait for the re-render to kick in
+
+`.update`
+forces the component to rerender
+
+`.prop(key)`
+allows us to pull props from an element
+
+### Describe
+
+The `describe` function in Jest allows us to group tests together
+
+## Redux
+
+Redux Store (provider)
+|
+App
+|**_ CommentBox (connect)
+|
+|_** CommentList (connect)
+
+actionCreator
+
+takes a string and dispatches an action of a give type based on that string
