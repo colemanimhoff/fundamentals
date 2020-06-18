@@ -1,6 +1,6 @@
 # React Redux Demo
 
-![Without Redux]('assets/without-redux.png')
+![Without Redux]('songs/assets/without-redux.png')
 
 ![With Redux]('./assets/with-redux.png')
 
