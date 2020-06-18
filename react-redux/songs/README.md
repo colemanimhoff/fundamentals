@@ -1,8 +1,8 @@
 # React Redux Demo
 
-![Without Redux]('../assets/without-redux.png')
+![Without Redux](./assets/without-redux.png)
 
-![With Redux]('./assets/with-redux.png')
+![With Redux](./assets/with-redux.png)
 
 ## How React-Redux Works
 
@@ -15,11 +15,11 @@
 
 Provider and connect are provided by `react-redux`
 
-![Inner Workings]('./assets/with-redux-details.png)
+![Inner Workings](./assets/with-redux-details.png)
 
 ## Project Structure
 
-![Project Structure]('./assets/project-structure.png)
+![Project Structure](./assets/project-structure.png)
 
 ## Redux Is Not Magic
 
