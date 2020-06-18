@@ -32,6 +32,6 @@ Actions must be plain objects with a type property. You must use custom middlewa
 
 ### What is actually happening
 
-![What Is Happening]('./assets/what-is-happening.png)
+![What Is Happening](./assets/what-is-happening.png)
 
-![What Is Happening 2]('./assets/what-is-happening-2.png)
+![What Is Happening 2](./assets/what-is-happening-2.png)
