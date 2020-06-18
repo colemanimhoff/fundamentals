@@ -2,7 +2,7 @@
 
 ![Without Redux]('songs/without-redux.png')
 
-![With Redux]('songs/with-redux.png')
+![With Redux]('./with-redux.png')
 
 ## How React-Redux Works
 
