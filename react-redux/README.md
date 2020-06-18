@@ -91,10 +91,14 @@ State is a central repository of all data that has been created by our reducers.
 As an app grows, so does it's complexity
 With Redux, this curve flattens. Redux helps with self-documentation and escapsulation
 
-![Redux Cycle]('./redux-cycle.png)
+![Redux Cycle]('redux-cycle.png)
 
 ## React-Redux
 
 React -> React-Redux -> Redux
 
 React-Redux allows react and redux to work together
+
+Absolutely understand the purpose of reducers
+Absolutely understand making API requests with Redux
+Absoletely understand the purpose of middleware, specifically 'redux thunk'
