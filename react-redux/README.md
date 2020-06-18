@@ -91,7 +91,7 @@ State is a central repository of all data that has been created by our reducers.
 As an app grows, so does it's complexity
 With Redux, this curve flattens. Redux helps with self-documentation and escapsulation
 
-![Redux Cycle]('/redux-cycle.png)
+![Redux Cycle]('https://github.com/colemanimhoff/fundamentals/blob/master/react-redux/redux-cycle.png')
 
 ## React-Redux
 
