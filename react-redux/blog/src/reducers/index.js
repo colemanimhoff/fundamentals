@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux'
 
+import postsReducer from './postsReducer'
+import usersReducer from './usersReducer'
+
 export default combineReducers({
-  todo: () => true,
+  posts: postsReducer,
+  users: usersReducer,
 })
