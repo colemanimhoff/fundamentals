@@ -8,7 +8,22 @@ Consists of two libraries - React & ReactDOM
 React is the code which determines what a React Component is and how components work together
 ReactDOM takes the components and builds the virtual DOM
 
-# JSX
+## Class Components
+
+- Must be a JavaScript Class
+- Must extend (subclass) React.Component
+- Must define a 'render' method that returns some amount of `JSX`
+
+## State
+
+- Only usable with class components (unless you are using hooks!)
+- Props are not state
+- State is a JS object that contains data relevant to a component
+- Updating 'state' on a component causes the component to (almost) instantly re-render
+- State must be initialized when a component is created
+- State can only be updated using the function `setState`
+
+## JSX
 
 A syntax containing a combination of HTML and JS syntax. Using babel, this:
 
@@ -18,7 +33,73 @@ compiles to this:
 
 `const App = () => { return /*#__PURE__*/React.createElement("div", null, "Hello"); };`
 
-# Redux
+## Props
+
+You can define default props to a component. For example:
+
+```javascript
+Spinner.defaultProps = {
+  message: 'Loading...',
+}
+```
+
+## Life Cycle Methods
+
+- `constructor`
+- `render`
+  content (jsx) visible on screen
+- `componentDidMount` (called one time)
+  sit and wait for updates (setState is called)
+- `componentDidUpdate`
+  sit and wait until this component is no longer shown; `render` will be called first
+- `componentWillUnmount` (clean up)
+
+### Construstor
+
+Good for one time set up, such as setting your initalState. Technically, you can fetch data here, but it is not recommended. If we centralize our data fetching logic inside one centralized lifecycle (`componentDidMount`), then it will lead to more clear code.
+
+### Render
+
+returns `JSX`
+
+It's best to avoid conditional logic (or logic in general) inside the render function. You can define a function, such as `renderList` or `renderContent` outside of the `render` function and you can all that function inside the `render` function.
+
+For example:
+
+```javascript
+renderContent() {
+  if (this.state.loading) {
+    return <Spinner />
+  }
+
+  if (this.state.redirect) {
+    return <Redirect />
+  }
+
+  return <Content />
+}
+
+render() {
+  return <div>{this.renderContent()}</div>
+}
+```
+
+### componentDidMount
+
+Perfect for running an outside process or fetching data upon initialization.
+
+### componentDidUpdate
+
+This lifecyle is called anytime our data changes, via `setState` or when a component receives a new `prop` from it's parent
+
+### componentWillUnmount
+
+Good for clean, especially non-React stuff
+
+![Component Lifecycle](component-lifecycle.png)
+![Other Lifecycles](other-lifecycles.png)
+
+## Redux
 
 - State management library
 - Make creating complex appliations easier
