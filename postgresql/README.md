@@ -44,7 +44,9 @@ RDBMS allow us to interact with the database
 
 ## Creating Databases
 
-`CREATE DATABASE ${databaseName};`
+```sql
+CREATE DATABASE ${databaseName};
+```
 
 or (while not connected to a database)
 `createdb ${databaseName}`
@@ -71,7 +73,9 @@ Once connected to a database, run `/?` to see a list of commands
 
 ## Delete Database
 
-`DROP DATABASE ${databaseName}`
+```sql
+DROP DATABASE ${databaseName}
+```
 
 or (while not connected to a database)
 `dropdb ${databaseName}`
@@ -80,21 +84,29 @@ or (while not connected to a database)
 
 via command line
 
-`CREATE TABLE person (id INT,first_name VARCHAR(50), last_name VARCHAR(50), gender VARCHAR(7), date_of_birth DATE);`
+```sql
+CREATE TABLE person (id INT,first_name VARCHAR(50), last_name VARCHAR(50), gender VARCHAR(7), date_of_birth DATE);
+```
 
 ### Drop Table
 
-`test=# DROP TABLE person;`
+```sql
+DROP TABLE person;
+```
 
 ### Specifying Table constraints
 
 (BIGSERIAL autoincrements)
 
-`CREATE TABLE person (id BIGSERIAL NOT NULL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, gender VARCHAR(7) NOT NULL, date_of_birth DATE NOT NULL, email VARCHAR(50));`
+```sql
+CREATE TABLE person (id BIGSERIAL NOT NULL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, gender VARCHAR(7) NOT NULL, date_of_birth DATE NOT NULL, email VARCHAR(50));
+```
 
 ### Insert Records
 
-`INSERT INTO person(first_name, last_name, gender, date_of_birth) VALUES ('Anne', 'Smith', 'FEMALE', date '1988-01-09');`
+```sql
+INSERT INTO person(first_name, last_name, gender, date_of_birth) VALUES ('Anne', 'Smith', 'FEMALE', date '1988-01-09');
+```
 
 ## Execute From File
 
@@ -102,12 +114,19 @@ via command line
 
 ## Select All Records from Table
 
-`SELECT * FROM person;`
+```sql
+SELECT * FROM person;
+```
 
 ## Select Specific Columns from Records
 
-`SELECT first_name FROM person`
-`SELECT first_name, last_name FROM person`
+```sql
+SELECT first_name FROM person;
+```
+
+```sql
+SELECT first_name, last_name FROM person;
+```
 
 If entries in a column are null, postgres returns empty data in column
 
@@ -115,35 +134,49 @@ If entries in a column are null, postgres returns empty data in column
 
 Default is ascending
 
-`SELECT * FROM person ORDER BY country_of_birth;`
+```sql
+SELECT * FROM person ORDER BY country_of_birth;
+```
 
 Can also do
 
-`SELECT * FROM person ORDER BY country_of_birth ASC;`
+```sql
+SELECT * FROM person ORDER BY country_of_birth ASC;
+```
 
 Descending
 
-`SELECT * FROM person ORDER BY country_of_birth DESC;`
+```sql
+SELECT * FROM person ORDER BY country_of_birth DESC;
+```
 
 Combining
 
-`SELECT * FROM person ORDER BY id, email;`
+```sql
+SELECT * FROM person ORDER BY id, email;
+```
 
 ## DISTINCT
 
 Show only distinct records
 
-`SELECT DISTINCT country_of_birth FROM person ORDER BY country_of_birth;`
+```sql
+SELECT DISTINCT country_of_birth FROM person ORDER BY country_of_birth;
+```
 
 ## WHERE
 
 Filter data based on conditions
 
-`SELECT * FROM person WHERE gender='Female';`
+```sql
+SELECT * FROM person WHERE gender='Female';
+```
 
 Multiple conditions
 
-`SELECT * FROM person WHERE gender='Male' AND country_of_birth='Poland';`
+```sql
+SELECT * FROM person WHERE gender='Male' AND country_of_birth='Poland';
+```
 
 ## OR
 
@@ -155,77 +188,127 @@ Multiple conditions
 
 Used for math or comparison
 
-`SELECT 1 = 1;`
+```sql
+SELECT 1 = 1;
+```
+
 returns `t`
-`SELECT 1 = 2;`
+
+```sql
+SELECT 1 = 2;
+```
+
 returns `f`
 
 Not equal
-`SELECT 2 <> 2;`
+
+```sql
+SELECT 2 <> 2;
+```
+
 returns `f`
 
-`SELECT 2 <> 1;`
+```sql
+SELECT 2 <> 1;
+```
+
 returns `t`
 
-`SELECT 'z' <> 'Z';`
+```sql
+SELECT 'z' <> 'Z';
+```
+
 returns `t`
 
-`SELECT '2' <> '2';`
+```sql
+SELECT '2' <> '2';
+```
+
 returns `f`
 
 ## LIMIT
 
-`SELECT * from person LIMIT 10;`
+```sql
+SELECT * from person LIMIT 10;
+```
 
 ## OFFSET
 
-`SELECT * from person LIMIT 5;`
+```sql
+SELECT * from person LIMIT 5;
+```
+
 returns rows 5 through 10
 
 ## FETCH (O.G to SQL)
 
-`SELECT * from person OFFSET 5 FETCH FIRST 5 ROW ONLY;`
+```sql
+SELECT * from person OFFSET 5 FETCH FIRST 5 ROW ONLY;
+```
 
-`SELECT * from person OFFSET 5 FETCH FIRST ROW ONLY;`
+```sql
+SELECT * from person OFFSET 5 FETCH FIRST ROW ONLY;
+```
+
 return 1 row
 
 ## IN
 
-`SELECT * FROM person WHERE country_of_birth='Brazil' OR country_of_birth='France' OR country_of_birth='China';`
+```sql
+SELECT * FROM person WHERE country_of_birth='Brazil' OR country_of_birth='France' OR country_of_birth='China';
+```
 
 But the shorter syntax uses `IN`
 
-`SELECT * FROM person WHERE country_of_birth IN ('Brazil', 'China', 'France')`
+```sql
+SELECT * FROM person WHERE country_of_birth IN ('Brazil', 'China', 'France')
+```
 
 ## Between
 
 Select data from range
 
-`SELECT * FROM person WHERE date_of_birth BETWEEN DATE '2000-01-01' AND '2020-01-01';`
+```sql
+SELECT * FROM person WHERE date_of_birth BETWEEN DATE '2000-01-01' AND '2020-01-01';
+```
 
 # Like
 
-`SELECT * FROM person WHERE email LIKE '%.com';`
+```sql
+SELECT * FROM person WHERE email LIKE '%.com';
+```
 
 returns emails ending in `.com`
 
-`SELECT * FROM person WHERE email LIKE '%google.%';`
+```sql
+ SELECT * FROM person WHERE email LIKE '%google.%';
+```
 
 `%` is the wildcard
 
-`SELECT * FROM person WHERE email LIKE '________@%';`
+```sql
+ SELECT * FROM person WHERE email LIKE '________@%';
+```
 
 `_` represents a character
 
-`SELECT * FROM person WHERE country_of_birth LIKE 'P%';`
+```sql
+ SELECT * FROM person WHERE country_of_birth LIKE 'P%';
+```
+
 return countries
 
-`SELECT * FROM person WHERE country_of_birth LIKE 'p%';`
+```sql
+ SELECT * FROM person WHERE country_of_birth LIKE 'p%';
+```
+
 returns no rows
 
 ## GROUP BY
 
-`SELECT country_of_birth, COUNT(*) FROM person GROUP BY country_of_birth;`
+```sql
+ SELECT country_of_birth, COUNT(*) FROM person GROUP BY country_of_birth;
+```
 
 `COUNT` is a SQL func and takes an arg `*` meaning all
 
@@ -235,75 +318,112 @@ Works with `GROUP BY` and allows you to perform extra filtering after the agrega
 
 `HAVING` takes a function and an argument followed by a condition
 
-`SELECT country_of_birth, COUNT(*) FROM person GROUP BY country_of_birth HAVING COUNT(*) > 5 ORDER BY country_of_birth;`
+```sql
+ SELECT country_of_birth, COUNT(*) FROM person GROUP BY country_of_birth HAVING COUNT(*) > 5 ORDER BY country_of_birth;
+```
 
 ## Aggregate Functions
 
 ## MAX
 
-`SELECT MAX(price) from car;`
+```sql
+ SELECT MAX(price) from car;
+```
 
 ## MIN
 
-`SELECT MIN(price) from car;`
+```sql
+ SELECT MIN(price) from car;
+```
 
 ## AVG
 
-`SELECT AVG(price) from car;`
+```sql
+SELECT AVG(price) from car;
+```
 
 ## ROUND
 
-`SELECT ROUND(AVG(price)) from car;`
+```sql
+SELECT ROUND(AVG(price)) from car;
+```
 
-`SELECT make, MAX(price) FROM car GROUP BY make;`
+```sql
+SELECT make, MAX(price) FROM car GROUP BY make;
+```
 
 ## SUM
 
-`SELECT SUM(price) FROM car;`
+```sql
+SELECT SUM(price) FROM car;
+```
 
 ## ARITHMETIC
 
-`SELECT 10 * 2 - 10;`
+```sql
+SELECT 10 * 2 - 10;
+```
+
 returns 10
 
-`SELECT 10 % 3;`
+```sql
+SELECT 10 % 3;
+```
+
 returns 1
 
 providing additional data
 
-`SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10), 2) FROM car;`
+```sql
+SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10), 2) FROM car;
+```
 
 By default SQL will use `?column?` or a function name for extra columns. You can use aliases with `AS`
+`` sql
+
+``
 
 ## AS
 
 You can even alias existing columns
 
-`SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10), 2) FROM car;`
+```sql
+SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10), 2) FROM car;
+```
 
 ## COALESCE
 
-`SELECT COALESCE(email, 'Email not provided') FROM person;`
+```sql
+SELECT COALESCE(email, 'Email not provided') FROM person;
+```
 
 provides a default value of 'Email not provided'
 
 Handle division by zero
 
-`SELECT COALESCE(10 / NULLIF(0,0), 0);`
+```sql
+SELECT COALESCE(10 / NULLIF(0,0), 0);
+```
 
 ## NOW
 
 Time stamp
 
-`SELECT NOW();`
+```sql
+SELECT NOW();
+```
 
 Cast to date:
 
-`SELECT NOW()::DATE;`
+```sql
+SELECT NOW()::DATE;
+```
 
 Cast to time:
 
-`SELECT NOW()::TIME;`
+```sql
+SELECT NOW()::TIME;
+```
 
 ## Adding and Subtracting with Dates
 
@@ -311,34 +431,77 @@ Cast to time:
 
 Can also use the plural version
 
-`SELECT NOW() - INTERVAL '10 YEAR';`
-`SELECT NOW() - INTERVAL '10 MONTH';`
-`SELECT NOW() - INTERVAL '10 DAY';`
+```sql
+SELECT NOW() - INTERVAL '10 YEAR';
+```
+
+```sql
+SELECT NOW() - INTERVAL '10 MONTH';
+```
+
+```sql
+SELECT NOW() - INTERVAL '10 DAY';
+```
 
 Extract a certain peice of a date:
 
-`SELECT NOW()::DATE;` <- Date
-`SELECT NOW()::TIME;` <- Time
+(date)
+
+```sql
+SELECT NOW()::DATE;
+```
+
+(Time)
+
+```sql
+SELECT NOW()::TIME;
+```
 
 ## EXTRACT
 
-`SELECT EXTRACT (YEAR FROM NOW());` -> 2020
-`SELECT EXTRACT (MONTH FROM NOW());` -> 5
-`SELECT EXTRACT (DAY FROM NOW());` -> 26
-`SELECT EXTRACT (CENTURY FROM NOW());` -> 21
+(2020)
+
+```sql
+SELECT EXTRACT (YEAR FROM NOW());
+```
+
+(5)
+
+```sql
+SELECT EXTRACT (MONTH FROM NOW());
+```
+
+(26)
+
+```sql
+SELECT EXTRACT (DAY FROM NOW());
+```
+
+(21)
+
+```sql
+SELECT EXTRACT (CENTURY FROM NOW());
+```
 
 ## AGE
 
-`SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;`
+```sql
+SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;
+```
 
 Let's combine!
 
-`SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;`
+```sql
+SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;
+```
+
 returns `51 years 4 mons 41 days 29:30:29.227276`
 
 Let's just get the average years
 
-`SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;`
+```sql
+SELECT first_name, last_name, gender, country_of_birth, date_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;
+```
 
 ## Primary Keys
 
@@ -347,10 +510,16 @@ Uniquely identifies a record in a table.
 ## ALTER
 
 Drop
-`ALTER TABLE person DROP CONSTRAINT person_pkey;`
+
+```sql
+ALTER TABLE person DROP CONSTRAINT person_pkey;
+```
 
 Add
-`ALTER TABLE person ADD PRIMARY KEY (id);`
+
+```sql
+ALTER TABLE person ADD PRIMARY KEY (id);
+```
 
 If you have a duplicate entry where you are setting the primary key, this won't work
 
@@ -360,7 +529,9 @@ You will have to delete the entries, add them with separate ids, then add the pr
 
 Allows to have assert unique values in a column
 
-`ALTER TABLE person ADD CONSTRAINT unique_email_address UNIQUE (email);`
+```sql
+ALTER TABLE person ADD CONSTRAINT unique_email_address UNIQUE (email);
+```
 
 If you have a duplicate, this doesn't work.
 
@@ -374,7 +545,9 @@ If you try add someone with the same email, you will get an error:
 
 Another way to add a contraint:
 
-`ALTER TABLE person ADD UNIQUE(email);`
+```sql
+ALTER TABLE person ADD UNIQUE(email);
+```
 
 Here, you let postgres name it for you.
 
@@ -382,7 +555,9 @@ Here, you let postgres name it for you.
 
 Add a contrainst based on a condition
 
-`ALTER TABLE person ADD CONSTRAINT gender_constraint CHECK(gender = 'Female' OR gender = 'Male');`
+```sql
+ALTER TABLE person ADD CONSTRAINT gender_constraint CHECK(gender = 'Female' OR gender = 'Male');
+```
 
 # DELETE
 
@@ -392,37 +567,51 @@ BE CAREFUL
 
 You can delete all your rows of data very easily.
 
-`DELETE FROM person;` <- Deletes Everything!
+````sql
+DELETE FROM person;` <- Deletes Everything
+``!
 
 This is safer
 
-`DELETE FROM person WHERE id='1005';`
+```sql
+DELETE FROM person WHERE id='1005';
+````
 
 Extend with `AND`
 
-`DELETE FROM person WHERE gender = 'Female' AND country_of_birth = 'Nigeria';`
+```sql
+DELETE FROM person WHERE gender = 'Female' AND country_of_birth = 'Nigeria';
+```
 
 # UPDATE
 
 use `SET` to pass in array of columns values and new values
 
-`UPDATE person SET email = 'barrie@gmail.com' WHERE id='2005';`
+```sql
+UPDATE person SET email = 'barrie@gmail.com' WHERE id='2005';
+```
 
 Multiple columns and values
 
-`UPDATE person SET first_name = 'Barry', email = 'barry@gmail.com' WHERE id='2005';`
+```sql
+UPDATE person SET first_name = 'Barry', email = 'barry@gmail.com' WHERE id='2005';
+```
 
 Make sure you have a `WHERE` clause otherwise you may update the entire table
 
 # ON CONFLICT DO NOTHING
 
-`INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn', 'Female' '1974-12-31', 'Russia') test-# ON CONFLICT (id) DO NOTHING;`
+```sql
+INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn', 'Female' '1974-12-31', 'Russia') test-# ON CONFLICT (id) DO NOTHING;
+```
 
 returns `INSERT 0 0`
 
 This only works if there is a unique contraint or PK
 
-`INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn', 'Female' '1974-12-31', 'Russia') test-# ON CONFLICT (gender) DO NOTHING;`
+```sql
+INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn', 'Female' '1974-12-31', 'Russia') test-# ON CONFLICT (gender) DO NOTHING;
+```
 
 returns `there is no unique or exclusion constraint matching the ON CONFLICT specification`
 
@@ -432,13 +621,17 @@ Example:
 
 You have a user registering on your web site. They make a request to add their user details to your api. The user submits their email, but changes there mind and submits with a different email.
 
-`INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth, country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn.uk', 'Female', '1974-12-31', 'Russia') ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`
+```sql
+INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth, country_of_birth) VALUES(2008, 'Minnie', 'McKea', 'mmckea3@360.cn.uk', 'Female', '1974-12-31', 'Russia') ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;
+```
 
 Email will be updated here, despite the conflict with the id
 
 You can upsert many values on conflict like so:
 
-`INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth, country_of_birth) VALUES(2008, 'Minny', 'McKeay', 'mmckeay3@360.cn.uk', 'Female', '1974-12-31', 'Russia') ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, last_name = EXCLUDED last_name, first_name = EXCLUDED.first_name;`
+```sql
+INSERT INTO person (id, first_name, last_name, email, gender, date_of_birth, country_of_birth) VALUES(2008, 'Minny', 'McKeay', 'mmckeay3@360.cn.uk', 'Female', '1974-12-31', 'Russia') ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, last_name = EXCLUDED last_name, first_name = EXCLUDED.first_name;
+```
 
 ## FOREIGN Keys, Joins, and Relationships
 
@@ -453,24 +646,37 @@ To acheive this, we can have a relationship.
 
 `person.car_id` (FK) -> `car.id` (PK) (type needs to be the same)
 
-`car_id BIGINT REFERENCES card(id) UNIQUE (car_id)`
+```sql
+car_id BIGINT REFERENCES card(id) UNIQUE (car_id)
+```
 
 Add a foreign key to person. We are making it a big in here because `BIGSERIAL` is managed by a sequence. Otherwise, `BIGSERIAL` and `BIGINT` are the same.
 
-`car_id BIGINT REFERENCES car (id)`
+```sql
+car_id BIGINT REFERENCES car (id)
+```
 
 The car table must be created first because the person table references it. It would break otherwise.
 
 You can add car ids to a person like so:
 
-`UPDATE person SET car_id = 1 WHERE id = 2;`
+```sql
+UPDATE person SET car_id = 1 WHERE id = 2;
+```
 
 If you try to add a car id that doesn't exist, you will get an error:
 
-`UPDATE person SET car_id = 3 WHERE id = 3;`
+```sql
+UPDATE person SET car_id = 3 WHERE id = 3;
+```
 
-`ERROR: insert or update on table "person" violates foreign key constraint "person_car_id_fkey"`
-`DETAIL: Key (car_id)=(3) is not present in table "car".`
+```sql
+ERROR: insert or update on table "person" violates foreign key constraint "person_car_id_fkey"
+```
+
+```sql
+DETAIL: Key (car_id)=(3) is not present in table "car".
+```
 
 You can only assign a foriegn key when there is a relation that exists in the other table
 
@@ -484,25 +690,34 @@ Table A + Table B = Table C
 
 `ON` (takes a column from the table you specify)
 
-`SELECT * FROM person JOIN car ON person.car_id = car.id;`
+```sql
+SELECT * FROM person JOIN car ON person.car_id = car.id;
+```
 
 In this example, we have one person without a car. Therfore, they are not shown in the join table. This is because we join based on the condition
 
 We can specify which columns we want to show in the join table from both tables:
 
-`SELECT person.first_name, car.make, car.model, car.price FROM person JOIN car ON person.car_id = car.id;`
+```sql
+SELECT person.first_name, car.make, car.model, car.price FROM person JOIN car ON person.car_id = car.id;
+```
 
 ## LEFT JOIN
 
 Allows to combine too tables, like inner join. The difference is a left join includes all the rows from table a as well as the records from table b that have a cooresponding relationship and also the records that don't have a corresponding relationship (i.e all records even it there isn't a match).
 
-`SELECT * FROM person LEFT JOIN car ON person.car_id = car.id;`
+```sql
+SELECT * FROM person LEFT JOIN car ON person.car_id = car.id;
+```
 
 returns all 3 people, including Billy Bob who doesn't have a car (no FK relation between car and person)
 
 You can tack on a `WHERE` clause at the end to futher filter your results
 
-`SELECT * FROM person LEFT JOIN car ON person.car_id = car.id WHERE car.* IS NULL;`
+```sql
+SELECT * FROM person LEFT JOIN car ON person.car_id = car.id WHERE car.* IS NULL;
+```
+
 returns the joined tables, but only with the person without a car
 
 ## Deleting Records with Foreign Keys
@@ -510,31 +725,42 @@ returns the joined tables, but only with the person without a car
 If we delete a car that has a relationship to a person, we get an error:
 
 `ERROR: update or delete on table "car" violates foreign key constraint "person_car_id_fkey" on table "person"`
+
 `DETAIL: Key (id)=(3) is still referenced from table "person".`
 
 `CASCADE` is bad practice. You always want full control of your data. Instead you want to first set the person's car id to `NULL` and then delete the car:
 
-`UPDATE person SET car_id = NULL WHERE id = 4;`
+```sql
+UPDATE person SET car_id = NULL WHERE id = 4;
+```
 
 And then:
 
-`DELETE FROM car WHERE id = 3;`
+```sql
+DELETE FROM car WHERE id = 3;
+```
 
 ## EXPORT DATA TO CSV FILE
 
-`\copy (SELECT * FROM person LEFT JOIN car ON (car.id = person.car_id)) TO '{filePathAndName}' WITH DELIMITER ',' CSV HEADER`
+```sql
+\copy (SELECT * FROM person LEFT JOIN car ON (car.id = person.car_id)) TO '{filePathAndName}' WITH DELIMITER ',' CSV HEADER
+```
 
 ## BIG SERIAL DATA TYPE
 
 You can select the `BIGINT` type from `BIGSERIAL`
 
-`SELECT * FROM person_id_seq;`
+```sql
+SELECT * FROM person_id_seq;
+```
 
 If you run `\d person` you will see `nextval('person_id_req'::reqclass)
 
 You can invoke this function like so:
 
-`SELECT nextval('person_id_seq'::regclass);`
+```sql
+SELECT nextval('person_id_seq'::regclass);
+```
 
 If query the `person_id_seq` table again, we will see that the `last_value` record is now incremented one higher.
 
@@ -542,7 +768,9 @@ The next person we add will have that higher value as it's id.
 
 To restart the sequence, we can alter it:
 
-`ALTER SEQUENCE person_id_seq RESTART WITH 9;`
+```sql
+ALTER SEQUENCE person_id_seq RESTART WITH 9;
+```
 
 ## Extensions
 
@@ -550,7 +778,9 @@ Postgres is designed to be easily extended. Extensions are functions that can ad
 
 To view available extensions, run:
 
-`SELECT * FROM pg_available_extensions;`
+```sql
+SELECT * FROM pg_available_extensions;
+```
 
 ## UUID (Universally Unique Indentifier)
 
@@ -560,7 +790,10 @@ To use `UUID`, you need to install the extension.
 
 `IF NOT EXISTS` ensures that it only takes effect if the extension doesn't already exist.
 
-`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+```sql
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+
 returns `CREATE EXTENSION`
 
 If we view the list of available extensions again, you will see the installed version column populated.
@@ -569,12 +802,16 @@ Once the extension is installed, you can see a list of available functions with 
 
 To run a function, run `SELECT` and the invoked function name. For example:
 
-`SELECT uuid_generate_v4();`
+```sql
+SELECT uuid_generate_v4();
+```
 
 One benefit of `UUID` as PKs is that it makes are data safer. It makes it harder for attackers to mine or database. For example, with an url of `users/1000`, the attacker can exploit all of the users from 1-100.
 
 Let's do a join on these new tables:
 
-`SELECT person.first_name, person.last_name, car.make, car.model FROM person LEFT JOIN car ON person.car_uuid = car.car_uuid;`
+```sql
+SELECT person.first_name, person.last_name, car.make, car.model FROM person LEFT JOIN car ON person.car_uuid = car.car_uuid;
+```
 
-Because these ids have the same column name, we can query using the `USING` key:
+Because these ids have the same column name, we can query using the `USING` key
