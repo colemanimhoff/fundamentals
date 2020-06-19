@@ -180,9 +180,13 @@ SELECT * FROM person WHERE gender='Male' AND country_of_birth='Poland';
 
 ## OR
 
-`SELECT * FROM person WHERE gender='Male' AND (country_of_birth='Poland' OR country_of_birth='China');`
+```sql
+SELECT * FROM person WHERE gender='Male' AND (country_of_birth='Poland' OR country_of_birth='China');
+```
 
-`SELECT * FROM person WHERE gender='Male' AND (country_of_birth='Poland' OR country_of_birth='China') AND last_name='Antal';`
+```sql
+SELECT * FROM person WHERE gender='Male' AND (country_of_birth='Poland' OR country_of_birth='China') AND last_name='Antal';
+```
 
 ## Operators
 
@@ -379,9 +383,6 @@ SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10
 ```
 
 By default SQL will use `?column?` or a function name for extra columns. You can use aliases with `AS`
-`` sql
-
-``
 
 ## AS
 
@@ -567,15 +568,17 @@ BE CAREFUL
 
 You can delete all your rows of data very easily.
 
-````sql
-DELETE FROM person;` <- Deletes Everything
-``!
+Deletes Everything...
+
+```sql
+DELETE FROM person;
+```
 
 This is safer
 
 ```sql
 DELETE FROM person WHERE id='1005';
-````
+```
 
 Extend with `AND`
 
