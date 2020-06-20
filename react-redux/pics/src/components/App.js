@@ -13,7 +13,7 @@ class App extends Component {
     if (response.status !== 200) {
       throw new Error(response.errors)
     } else {
-      this.setState({ images: response.data.results })
+      this.setState({ ...this.state, images: response.data.results })
     }
   }
 
