@@ -2,12 +2,19 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import CommentBox from 'components/CommentBox'
+import Root from 'Root'
 
 // we can get away with a shallow render here, but just as an example, we will use a full dom render
 
 let wrapped
 
-beforeEach(() => (wrapped = mount(<CommentBox />)))
+beforeEach(() => {
+  wrapped = mount(
+    <Root>
+      <CommentBox />
+    </Root>
+  )
+})
 afterEach(() => wrapped.unmount())
 
 it('has a text area and a button', () => {

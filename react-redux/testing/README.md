@@ -141,3 +141,22 @@ App
 actionCreator
 
 takes a string and dispatches an action of a give type based on that string
+
+When testing with redux, it is helpful to extract our redux setup (from `index.js`) into it's own component
+
+We can use `props.children` (feature of React) to wrap other components
+
+```javascript
+export default (props) => {
+  return <Provider store={createStore(reducers, {})}>{props.children}</Provider>
+}
+
+ReactDOM.render(
+  <Root>
+    <App />
+  </Root>,
+  document.querySelector('#root')
+)
+```
+
+In this case, `props.children` is equal to our `<App />` component
