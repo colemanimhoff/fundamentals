@@ -1,6 +1,6 @@
 # Testing
 
-![Testing](test.png)
+![Testing](testing.png)
 
 `create-react-app` gives us the following dependancies:
 
@@ -230,6 +230,8 @@ export default ({ children, initialState = {} }) => {
 ```
 
 ## Integration Testing
+
+![Testing](testing-xhr.png)
 
 In order to test xhr calls to external apis, we need some additional dependancies to make that happen.
 
