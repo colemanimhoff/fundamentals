@@ -1,5 +1,7 @@
 # Testing
 
+![Testing](test.png)
+
 `create-react-app` gives us the following dependancies:
 
 #### React
@@ -225,4 +227,50 @@ export default ({ children, initialState = {} }) => {
     <Provider store={createStore(reducers, initialState)}>{children}</Provider>
   )
 }
+```
+
+## Integration Testing
+
+In order to test xhr calls to external apis, we need some additional dependancies to make that happen.
+
+There is a great library called moxios which allows you to mock api calls.
+
+### Setup
+
+```javascript
+beforeEach(() => {
+  moxios.install()
+  moxios.stubRequest('http://jsonplaceholder.typicode.com/comments', {
+    status: 200,
+    response: [{ name: 'Fetched #1' }, { name: 'Fetched #2' }],
+  })
+})
+```
+
+### Cleanup
+
+```javascript
+afterEach(() => {
+  moxios.uninstall()
+})
+```
+
+### Wait for a response
+
+```javascript
+it('can fetch a list of comments and display them', (done) => {
+  const wrapped = mount(
+    <Root>
+      <App />
+    </Root>
+  )
+
+  wrapped.find('.fetch-comments').simulate('click')
+  moxios.wait(() => {
+    wrapped.update()
+    expect(wrapped.find('li').length).toEqual(2)
+    done()
+    wrapped.unmount()
+  })
+})
 ```
