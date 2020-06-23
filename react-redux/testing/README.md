@@ -160,3 +160,69 @@ ReactDOM.render(
 ```
 
 In this case, `props.children` is equal to our `<App />` component
+
+When testing reducers and action creators, create testing directories inside the matching directory.
+When testing reducers, you can create mock actions and reducers like so:
+
+```javascript
+it('handles actions of tyupe SAVE_COMMENT', () => {
+  const action = {
+    type: SAVE_COMMENT,
+    payload: 'New Comment',
+  }
+  const newState = commentsReducer([], action)
+
+  expect(newState).toEqual(['New Comment'])
+})
+```
+
+It is important to test your reducers to handle actions with unknown types:
+
+```javascript
+it('handles action with unknown type', () => {
+  const newState = commentsReducer([], { type: 'UNKNOWN_TYPE' }) // the action can also be {}
+
+  expect(newState).toEqual([]) // defualt case in reducer
+})
+```
+
+When testing actions, you need to check the type and payload:
+
+```javascript
+describe('saveComent', () => {
+  it('has the correct type', () => {
+    const action = saveComment()
+
+    expect(action.type).toEqual(SAVE_COMMENT)
+  })
+
+  it('has the correct payload', () => {
+    const action = saveComment('New Comment')
+
+    expect(action.payload).toEqual('New Comment')
+  })
+})
+```
+
+If you need to set some sort of state for testing, you can initialize a state object in the `beforeEach` function and pass it as props to the store. You will need to make sure you initial state has a default value, because you can't pass undefined:
+
+```javascript
+beforeEach(() => {
+  const initialState = {
+    comments: ['Comment 1', 'Comment 2'],
+  }
+
+  wrapped = mount(
+    <Root initialState={initialState}>
+      <CommentList />
+    </Root>
+  )
+})
+
+export default ({ children, initialState = {} }) => {
+  // set an intial state to `initialState` so you don't pass undefined
+  return (
+    <Provider store={createStore(reducers, initialState)}>{children}</Provider>
+  )
+}
+```

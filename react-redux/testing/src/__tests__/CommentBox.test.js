@@ -17,12 +17,12 @@ beforeEach(() => {
 })
 afterEach(() => wrapped.unmount())
 
-it('has a text area and a button', () => {
+it('has a text area and two buttons', () => {
   const textarea = wrapped.find('textarea')
   const button = wrapped.find('button')
 
   expect(textarea.length).toEqual(1)
-  expect(button.length).toEqual(1)
+  expect(button.length).toEqual(2)
 })
 
 // similate - merges into the javascript event object
