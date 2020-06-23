@@ -183,3 +183,11 @@ React-Redux allows react and redux to work together
 Absolutely understand the purpose of reducers
 Absolutely understand making API requests with Redux
 Absoletely understand the purpose of middleware, specifically 'redux thunk'
+
+## Higher Order Components
+
+A react component made to help us resuse code
+
+![Higher Order Component](higher-order-component.png)
+
+The `connect` component provided by `react-redux` is an example of a higher order component
