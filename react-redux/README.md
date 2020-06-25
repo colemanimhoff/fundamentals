@@ -191,3 +191,15 @@ A react component made to help us resuse code
 ![Higher Order Component](higher-order-component.png)
 
 The `connect` component provided by `react-redux` is an example of a higher order component
+
+### Steps to Create a HOC
+
+![Higher Order Component Steps](higher-order-component-steps.png)
+
+By convention, we name our HOC files leading with a lowercase letter. `requireAuth.js`. This is because, this helps differentiate files that returns a `function` vs a class
+
+We need to make sure we pass props to our child component like so:
+
+```javascript
+<ChildComponent {...this.props} />
+````
