@@ -158,6 +158,62 @@ React updates only what is necessary. React DOM compares the element and its chi
 
 Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
 
+### Component Overview
+
+React let's you define components as classes or functions. To define a React component class, you must extend `React.Component`.
+
+```javascript
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+The only method you must define in a `React.Component` subclass is called `render()`. All other methods are optional.
+
+React strongly recommends against creating your own base component classes. In React components, code reuse is primarily achieved through composition rather than inheritance.
+
+### Component Lifecycle
+
+Each component has several "lifecycle methods" that you can override to run code at particular times in the process.
+
+![Component Lifecycle Overview](component-lifecycle-overview.png)
+
+#### Mounting
+
+These methods are called in the following order when an instance of a component is being created and inserted into the DOM.
+
+1. `constructor()`
+2. `static getDerivedStateFromProps()` (relatively rare)
+3. `render()`
+4. `componentDidMount()`
+
+`componentWillMount()` is depreciated, considered unsafe, and should be avoided.
+
+#### Updating
+
+An update can be caused by changes to props or state. These methods are called in the following order when a component is being re-rendered:
+
+1. `static getDerivedStateFromProps()` (relatively rare)
+2. `shouldComponentUpdate()` (relatively rare)
+3. `render()`
+4. `getSnapshotBeforeUpdate()` (relatively rare)
+5. `componentDidUpdate()`
+
+`componentWillUpdate` and `componentWillReceiveProps()` are depreciated, considered unsafe, and should be avoided.
+
+#### Unmounting
+
+This method is called when a component is being removed from the DOM
+
+`componentWillUnmount`
+
+#### Error Handling
+
+1. `static getDerivedStateFromError()`
+2. `componentDidCatch()`
+
 ### Rendering Components
 
 When React sees an element representing a user-defined component, it passes JSX attributes and children to this component as a single object. We call this object `props`.
@@ -615,6 +671,25 @@ function FormattedDate(props) {
 This is called "top-down" or "unidirectional" data flow. Any state is always owned by some specific component, and any data or UI derived from that state can only affect components "below" them in the tree.
 
 We can render the same component in isolation multiple times in a view. Below, each `Clock` sets up its own timer and updates independently. 
+
+```javascript
+function App() {
+  return (
+    <div>
+      <Clock />
+      <Clock />
+      <Clock />
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+```
+
+In React apps, whether a component is stateful or stateless is considered an implementation detail of the component that may change over time. You can use stateless components inside stateful components, and vice versa.
 
 
 ## Other State Notes
