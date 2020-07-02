@@ -1,5 +1,8 @@
 # React
 
+Renders your UI and responds to events
+AKA: the "V" in MVC
+
 Declarative - easier to reason about, predict, and debug
 Component-Based - encapsulated components manage their own state
 
@@ -7,6 +10,70 @@ Consists of two libraries - React & ReactDOM
 
 React is the code which determines what a React Component is and how components work together
 ReactDOM takes the components and builds the virtual DOM
+
+## Buidling Components, Not Templates
+
+Separation of Concerns - reducing coupling and increasing cohesion
+
+Coupling is - the degree to which each program module relies on each of the other modules
+Cohesion - the degree to which elements of a module belong together
+
+Display logic and markup are inevitably tightly coupled. How do you find DOM nodes?
+
+Display logic and markup are highly cohesive. They both show in the UI.
+
+Templates tend to separate technologies, not concerns. In addition, templates are `underpowered`. This results in :
+- Reliance on primitive abstractions
+- Inventing lots of new concepts that already exist in JavaScript
+
+Pete Hunt, React -
+  "The framework cannot know how to separate your concerns for you. It hsould only provide `powerful expressive tools` for the user to do it correctly."
+
+A lot of frameworks force you into an MVC model. MVC has it's advantages, but this can result in bloating. In addition, the vocabulary you use is that of the framework and not of your appliation.
+
+React components are `highly cohesive` building blocks for UIs `loosely coupled` with other components.
+
+React wants you to use `components` to separate your concerns with the full power of JavaScript, not a templating language.
+
+Components are:
+- reusuable
+- composable
+- units (testable)
+- small (don't write spaghetti code)
+
+Only write display logic in your components!
+
+React has the `accessibity` of templates and the `power` of JavaScript.
+
+## Data Changes
+
+When `data changes`, React re-renders the entire component. React components are basically just idempotent functions. They describe your UI at `any point in time`, just like a server-rendered app.
+
+Idempotence is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application.
+
+Re-rendering on every change makes things simple. Every place data is displayed is guaranteed to be up-to-date, without data binding magic, or model dirty checking. There are no more explicity DOM operations - `everything is declarative`
+
+In computer science, declarative programming is a programming paradigm—a style of building the structure and elements of computer programs—that expresses the logic of a computation without describing its control flow.
+
+Rerending on every change sounds expensive. That's way React has a `virutal DOM`
+
+## Virutal DOM
+
+The `virtual DOM` makes re-rendering on every change `fast`. You can't just throw out the `DOM` and rebuilt it on each update. It's too slow and you'll lose form state and scroll position. Therefore, react built a `virtual DOM` (and events system) optimized for performance and memory footprint.
+
+How it works:
+
+On every `setState` call, React...
+
+- builds a new `virtual DOM` subtree
+- diffs the new tree with the old one
+- computes the minimal set of DOM mutations and puts them in a queue
+- and batch executes all updates
+
+It's `fast` because the DOM is slow. React computes minimal DOM operations and batches reads and writes for optimal performance. It has automatic top-level `event delegation` (with cross-browser HTML5 events) which creates synthetic events. It provides hooks for `custom update logic`, though they're alomst never used.
+
+React runs at `60 fps`.
+`Re-render` don't mutate!
 
 ## Class Components
 
@@ -25,13 +92,42 @@ ReactDOM takes the components and builds the virtual DOM
 
 ## JSX
 
-A syntax containing a combination of HTML and JS syntax. Using babel, this:
+An `optional` syntax extension to JavaScript containing a combination of HTML and JS syntax. After compilation, JSX expressions become regular JavaScript function calls and evaluate to JavaScript objects. This means that you can use JSX inside of if statements and for loops, assign it to variables, accept it as arguments, and return it from functions.
 
-`const App = () => { return <div>Hello</div> }`
+### Specifying Attributes with JSX
+
+With string literals:
+
+```javascript
+const element = <div tabIndex="0"></div>;
+```
+
+With embedded JavaScript expressions:
+
+```javascript
+const element = <img src={user.avatarUrl}></img>;
+```
+
+Don’t put quotes around curly braces when embedding a JavaScript expression in an attribute. You should either use quotes (for string values) or curly braces (for expressions), but not both in the same attribute.
+
+React DOM uses camelCase for it's property naming.
+
+JSX prevents injection attacks by escaping embedded values by default and ensures that you can never inject anyting that's not explicity written in your application.
+
+Babel compiles JSX down to `React.createElement()` calls
+
+```javascript
+const App = () => { return <div className="app">Hello</div> }
+```
 
 compiles to this:
 
-`const App = () => { return /*#__PURE__*/React.createElement("div", null, "Hello"); };`
+```javascript
+const App = () => { return /*#__PURE__*/React.createElement("div", { className: 'app' }, "Hello"); };
+```
+
+## Rendering Elements
+
 
 ## Props
 
