@@ -11,7 +11,7 @@ Consists of two libraries - React & ReactDOM
 React is the code which determines what a React Component is and how components work together
 ReactDOM takes the components and builds the virtual DOM
 
-## Buidling Components, Not Templates
+## Building Components, Not Templates
 
 Separation of Concerns - reducing coupling and increasing cohesion
 
@@ -27,23 +27,23 @@ Templates tend to separate technologies, not concerns. In addition, templates ar
 - Inventing lots of new concepts that already exist in JavaScript
 
 Pete Hunt, React -
-  "The framework cannot know how to separate your concerns for you. It hsould only provide `powerful expressive tools` for the user to do it correctly."
+  "The framework cannot know how to separate your concerns for you. It should only provide `powerful expressive tools` for the user to do it correctly."
 
-A lot of frameworks force you into an MVC model. MVC has it's advantages, but this can result in bloating. In addition, the vocabulary you use is that of the framework and not of your appliation.
+A lot of frameworks force you into an MVC model. MVC has it's advantages, but this can result in bloating. In addition, the vocabulary you use is that of the framework and not of your application.
 
 React components are `highly cohesive` building blocks for UIs `loosely coupled` with other components.
 
 React wants you to use `components` to separate your concerns with the full power of JavaScript, not a templating language.
 
 Components are:
-- reusuable
+- reusable
 - composable
 - units (testable)
 - small (don't write spaghetti code)
 
 Only write display logic in your components!
 
-React has the `accessibity` of templates and the `power` of JavaScript.
+React has the `accessibility` of templates and the `power` of JavaScript.
 
 ## Data Changes
 
@@ -51,13 +51,13 @@ When `data changes`, React re-renders the entire component. React components are
 
 Idempotence is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application.
 
-Re-rendering on every change makes things simple. Every place data is displayed is guaranteed to be up-to-date, without data binding magic, or model dirty checking. There are no more explicity DOM operations - `everything is declarative`
+Re-rendering on every change makes things simple. Every place data is displayed is guaranteed to be up-to-date, without data binding magic, or model dirty checking. There are no more explicit DOM operations - `everything is declarative`
 
 In computer science, declarative programming is a programming paradigm—a style of building the structure and elements of computer programs—that expresses the logic of a computation without describing its control flow.
 
-Rerending on every change sounds expensive. That's way React has a `virutal DOM`
+Re-rending on every change sounds expensive. That's way React has a `virtual DOM`
 
-## Virutal DOM
+## Virtual DOM
 
 The `virtual DOM` makes re-rendering on every change `fast`. You can't just throw out the `DOM` and rebuilt it on each update. It's too slow and you'll lose form state and scroll position. Therefore, react built a `virtual DOM` (and events system) optimized for performance and memory footprint.
 
@@ -70,7 +70,7 @@ On every `setState` call, React...
 - computes the minimal set of DOM mutations and puts them in a queue
 - and batch executes all updates
 
-It's `fast` because the DOM is slow. React computes minimal DOM operations and batches reads and writes for optimal performance. It has automatic top-level `event delegation` (with cross-browser HTML5 events) which creates synthetic events. It provides hooks for `custom update logic`, though they're alomst never used.
+It's `fast` because the DOM is slow. React computes minimal DOM operations and batches reads and writes for optimal performance. It has automatic top-level `event delegation` (with cross-browser HTML5 events) which creates synthetic events. It provides hooks for `custom update logic`, though they're almost never used.
 
 React runs at `60 fps`.
 `Re-render` don't mutate!
@@ -97,7 +97,7 @@ Don’t put quotes around curly braces when embedding a JavaScript expression in
 
 React DOM uses camelCase for it's property naming.
 
-JSX prevents injection attacks by escaping embedded values by default and ensures that you can never inject anyting that's not explicity written in your application.
+JSX prevents injection attacks by escaping embedded values by default and ensures that you can never inject anything that's not explicitly written in your application.
 
 Babel compiles JSX down to `React.createElement()` calls
 
@@ -113,7 +113,7 @@ const App = () => { return /*#__PURE__*/React.createElement("div", { className: 
 
 ## Rendering Elements
 
-Elements are the smalled building blocks of React apps. Unlike brower DOM elements, React elements are plain objects and are cheap to create. React DOM takes care of updating the DOM to match the React elements.
+Elements are the small building blocks of React apps. Unlike regular DOM elements, React elements are plain objects and are cheap to create. React DOM takes care of updating the DOM to match the React elements.
 
 ### Rendering an element to the DOM
 
@@ -152,11 +152,11 @@ setInterval(tick, 1000)
 
 In practice, most React apps only call `ReactDOM.render()` once.
 
-React updates only what is necassary. React DOM compares the element and its children to the previous one, and only applies the DOM updates necessary to bring the DOM to the desired state.
+React updates only what is necessary. React DOM compares the element and its children to the previous one, and only applies the DOM updates necessary to bring the DOM to the desired state.
 
 ## Components and Props
 
-Components let yuou split the UI into independent, reusable pieces, and think about each piece in isolation. Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
+Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
 
 ### Rendering Components
 
@@ -198,8 +198,8 @@ function App() {
   return (
     <div>
       <Welcome name="Sara" />
-      <Welcome name="Cahal" />
-      <Welcome name="Edite" />
+      <Welcome name="Bob" />
+      <Welcome name="Ellie" />
     </div>
   )
 }
@@ -279,7 +279,7 @@ function Comment(props) {
   );
 }
 ```
-You can futher simplify the `Comment` component by extracting a `UserInfo` component that renders an Avatar next to the user’s name:
+You can further simplify the `Comment` component by extracting a `UserInfo` component that renders an Avatar next to the user’s name:
 
 ```javascript
 function UserInfo(props) {
@@ -338,7 +338,7 @@ In computer programming, a `pure function` has the following properties:
 
 1. It's return value is the same for the arguments (no variation with local static variable, non-local variables, mutable reference arguments or I/O streams)
 
-2. It's evaluation has no side effects (no mutation of static variables, non-local variables, mutable reference arguemnts or I/O streams)
+2. It's evaluation has no side effects (no mutation of static variables, non-local variables, mutable reference arguments or I/O streams)
 
 
 ### Functional Component
@@ -448,13 +448,13 @@ But we will need to have the clock update itself every second
 
 ## Adding Lifecycle Methods to a Class
 
-The clock example doesn't update every second. In additon, it is very important to free up resources taken by the components when they are destroyed.
+The clock example doesn't update every second. In addition, it is very important to free up resources taken by the components when they are destroyed.
 
 We want to set up a timer whenever the Clock is rendered to the DOM for the first time. This is called “mounting” in React.
 
-We also want to clear that timer whenever the DOM produced by the Clock is removed. This is called “unmounting” in React.
+We also want to clear that timer whenever the DOM produced by the Clock is removed. This is called “un-mounting” in React.
 
-There are two lifecycle mothods we can declare here:
+There are two lifecycle methods we can declare here:
 
 The `componentDidMount()` method runs after the component output has been rendered to the DOM. This is a good place to set up a timer.
 
@@ -562,7 +562,7 @@ this.setState((state, props) => ({
 
 When you call `setState()`, React merges the object you provide into the current state.
 
-Your state can contain several independant variables:
+Your state can contain several independent variables:
 
 ```javascript
   constructor(props) {
@@ -596,6 +596,27 @@ The merging is shallow, so `this.setState({comments})` leaves `this.state.posts`
 
 ## Data Flows Down
 
+Neither parent nor child components can know if a certain component is stateful or stateless, and they shouldn't care whether it is defined as a function or a class.
+
+A component may choose to pass its state down as props to its child components:
+
+```javascript
+<FormattedDate date={this.state.date} />
+```
+
+The FormattedDate component would receive the date in its props and wouldn’t know whether it came from the Clock’s state, from the Clock’s props, or was typed by hand:
+
+```javascript
+function FormattedDate(props) {
+  return <h2>It is {props.date.toLocaleTimeString()}.</h2>;
+}
+```
+
+This is called "top-down" or "unidirectional" data flow. Any state is always owned by some specific component, and any data or UI derived from that state can only affect components "below" them in the tree.
+
+We can render the same component in isolation multiple times in a view. Below, each `Clock` sets up its own timer and updates independently. 
+
+
 ## Other State Notes
 
 - Only usable with class components (unless you are using hooks!)
@@ -616,9 +637,9 @@ The merging is shallow, so `this.setState({comments})` leaves `this.state.posts`
   sit and wait until this component is no longer shown; `render` will be called first
 - `componentWillUnmount` (clean up)
 
-### Construstor
+### Constructor
 
-Good for one time set up, such as setting your initalState. Technically, you can fetch data here, but it is not recommended. If we centralize our data fetching logic inside one centralized lifecycle (`componentDidMount`), then it will lead to more clear code.
+Good for one time set up, such as setting your `initalState`. Technically, you can fetch data here, but it is not recommended. If we centralize our data fetching logic inside one centralized lifecycle (`componentDidMount`), then it will lead to more clear code.
 
 ### Render
 
@@ -652,7 +673,7 @@ Perfect for running an outside process or fetching data upon initialization.
 
 ### componentDidUpdate
 
-This lifecyle is called anytime our data changes, via `setState` or when a component receives a new `prop` from it's parent
+This lifecycle is called anytime our data changes, via `setState` or when a component receives a new `prop` from it's parent
 
 ### componentWillUnmount
 
@@ -665,13 +686,13 @@ Good for cleanup, especially non-React stuff
 ## Redux
 
 - State management library
-- Make creating complex appliations easier
+- Make creating complex applications easier
 - Not required to create a React app!
-- Not explicity designed to work with React
+- Not explicitly designed to work with React
 
 ## The Redux Cycle
 
-Action Creator (Person dropping off the form) -> Action (the form) -> dispatch (form reciever) -> Reducers (departments) -> State (central repository)
+Action Creator (Person dropping off the form) -> Action (the form) -> dispatch (form receiver) -> Reducers (departments) -> State (central repository)
 
 An analogy!
 
@@ -681,14 +702,14 @@ Policy - customer holds a 'policy' if bad stuff happens to them then we pay them
 Claim - custom had something bad happen to them, we need to pay them
 
 Customer fills out a `form`
-The customer hands the `form` to the Form Reciever
-The Form Reciever makes a copy of the `form` for each department:
+The customer hands the `form` to the Form Receiver
+The Form Receiver makes a copy of the `form` for each department:
 
 Claims History - stores a list of all claims ever made
-Policies - stores a list of who has a poliby with our insurance company
+Policies - stores a list of who has a policy with our insurance company
 Accounting - stores a big bag of cash, we pay people from this
 
-A particular department may not care or need to do anything with a particular from, but they recieve a copy
+A particular department may not care or need to do anything with a particular from, but they receive a copy
 
 Inside each department:
 
@@ -712,7 +733,7 @@ CREATE_POLICY | CREATE_CLAIM | DELETE_POLICY
 
 ### Action Creator
 
-An action creator is a function that creates or returns a plain javascript object. This object has an action `type` and a `payload`. The `type` property describes the change we want to make inside of our data. The `payload` propety provides context around the change we want to make.
+An action creator is a function that creates or returns a plain javascript object. This object has an action `type` and a `payload`. The `type` property describes the change we want to make inside of our data. The `payload` property provides context around the change we want to make.
 
 ### Action
 
@@ -724,7 +745,7 @@ The dispatch function take in an action, make copies of that object and passes i
 
 ### Reducer
 
-A reducer is a function that is reponsible for taking in an action and some sort of data (payload). It is going to process that action and makes a change to the data, then returns the data so it can be stored in a central location.
+A reducer is a function that is responsible for taking in an action and some sort of data (payload). It is going to process that action and makes a change to the data, then returns the data so it can be stored in a central location.
 
 ### State
 
@@ -733,7 +754,7 @@ State is a central repository of all data that has been created by our reducers.
 ## Why Redux
 
 As an app grows, so does it's complexity
-With Redux, this curve flattens. Redux helps with self-documentation and escapsulation
+With Redux, this curve flattens. Redux helps with self-documentation and encapsulation
 
 ![Redux Cycle](redux-cycle.png)
 
@@ -745,11 +766,11 @@ React-Redux allows react and redux to work together
 
 Absolutely understand the purpose of reducers
 Absolutely understand making API requests with Redux
-Absoletely understand the purpose of middleware, specifically 'redux thunk'
+Absolutely understand the purpose of middleware, specifically 'redux thunk'
 
 ## Higher Order Components
 
-A react component made to help us resuse code
+A react component made to help us reuse code
 
 ![Higher Order Component](higher-order-component.png)
 
