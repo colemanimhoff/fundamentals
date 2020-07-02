@@ -75,21 +75,6 @@ It's `fast` because the DOM is slow. React computes minimal DOM operations and b
 React runs at `60 fps`.
 `Re-render` don't mutate!
 
-## Class Components
-
-- Must be a JavaScript Class
-- Must extend (subclass) React.Component
-- Must define a 'render' method that returns some amount of `JSX`
-
-## State
-
-- Only usable with class components (unless you are using hooks!)
-- Props are not state
-- State is a JS object that contains data relevant to a component
-- Updating 'state' on a component causes the component to (almost) instantly re-render
-- State must be initialized when a component is created
-- State can only be updated using the function `setState`
-
 ## JSX
 
 An `optional` syntax extension to JavaScript containing a combination of HTML and JS syntax. After compilation, JSX expressions become regular JavaScript function calls and evaluate to JavaScript objects. This means that you can use JSX inside of if statements and for loops, assign it to variables, accept it as arguments, and return it from functions.
@@ -128,16 +113,349 @@ const App = () => { return /*#__PURE__*/React.createElement("div", { className: 
 
 ## Rendering Elements
 
+Elements are the smalled building blocks of React apps. Unlike brower DOM elements, React elements are plain objects and are cheap to create. React DOM takes care of updating the DOM to match the React elements.
 
-## Props
+### Rendering an element to the DOM
 
-You can define default props to a component. For example:
+Create a `root` DOM node on an html file:
+
+```html
+<div id="root"></div>
+```
+
+Use the `render` method via `ReactDOM` to render a given element.
 
 ```javascript
-Spinner.defaultProps = {
-  message: 'Loading...',
+const element = <h1>Hello, world</h1>;
+ReactDOM.render(element, document.getElementById('root'));
+```
+
+### Updating Rendered Elements
+
+React elements are `immutable`. Once you create an element, you can't change it's children or attributes. An element is like a single frame in a movie: it represents the UI at a certain point in time. The only way to update the UI is to create a new element, and pass it to `ReactDOM.render()`.
+
+The code below calls `ReactDOM.render` on every interval:
+
+```javascript
+function tick() {
+  const element = (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {new Date().toLocaleTimeString()}.</h2>
+    </div>
+  );
+  ReactDOM.render(element, document.getElementById('root'))
+}
+
+setInterval(tick, 1000)
+```
+
+In practice, most React apps only call `ReactDOM.render()` once.
+
+React updates only what is necassary. React DOM compares the element and its children to the previous one, and only applies the DOM updates necessary to bring the DOM to the desired state.
+
+## Components and Props
+
+Components let yuou split the UI into independent, reusable pieces, and think about each piece in isolation. Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
+
+### Rendering Components
+
+When React sees an element representing a user-defined component, it passes JSX attributes and children to this component as a single object. We call this object `props`.
+
+```javascript
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;
+ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+Recap of what is happening in the above sample:
+
+1. We call `ReactDOM.render()` with the <Welcome name="sara" /> element
+2. React calls the `Welcome` component with `{ name: 'Sara' }` as the props.
+3. Our `Welcome` component returns a `<h1>Hello, Sara</h1>` element as the result.
+4. React DOM efficiently updates the DOM to match `<h1>Hello, Sarah</h1>`.
+
+Always name Components with a capital letter
+
+### Composing Components
+
+Components can refer to other components in their output. This lets us use the same component abstraction for any level of detail. A button, a form, a dialog, a screen: in React apps, all those are commonly expressed as components.
+
+For example, we can create an App component that renders Welcome many times:
+
+```javascript
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+function App() {
+  return (
+    <div>
+      <Welcome name="Sara" />
+      <Welcome name="Cahal" />
+      <Welcome name="Edite" />
+    </div>
+  )
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+)
+```
+
+### Extracting Components
+
+Don't be afraid to split components into smaller components.
+
+The `Comment` component below takes in an `author` (object), `text` (a string), and `date` as props and describes a comment on social media.
+
+```javascript
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        /* extract me */
+        <img className="Avatar"
+          src={props.author.avatarUrl}
+          alt={props.author.name}
+        />
+        /* extract me */
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
 }
 ```
+
+First, extract `Avatar`
+
+```javascript
+function Avatar(props) {
+  return (
+    <img className="Avatar"
+      src={props.user.avatarUrl}
+      alt={props.user.name}
+    />
+  )
+}
+```
+
+`Avatar` doesn't need to know that is is being rendered inside a `Comment`. This is why we have given it's prop a more generic name: `user` rather than `author`. It is recommended to name props from the component’s own point of view rather than the context in which it is being used. 
+
+Now, we can inject `Avatar` as a child component to `Comment`:
+
+```javascript
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <Avatar user={props.author} />
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+```
+You can futher simplify the `Comment` component by extracting a `UserInfo` component that renders an Avatar next to the user’s name:
+
+```javascript
+function UserInfo(props) {
+  return (
+    <div className="UserInfo">
+      <Avatar user={props.user} />
+      <div className="UserInfo-name">
+        {props.user.name}
+      </div>
+    </div>
+  );
+}
+```
+
+`Comment` is looking lean!
+
+```javascript
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <UserInfo user={props.author} />
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  )
+}
+```
+
+### Props
+
+Props are `Read-Only`. Whether you declare a component as a `function` or `class`, it must NEVER modify its own `props`. Consider this `sum` function:
+
+```javascript
+function sum(a, b) {
+  return a + b
+}
+```
+
+This function is `pure`, because it does not attempt to change their inputs and always return the same result for the same inputs. In contrast, this function is `impure` because it changes its own input:
+
+```javascript
+function withdraw(account, amount) {
+  account.total -= amount
+}
+```
+
+React is flexible, but has one very strict rule:
+
+`All React components must act like pure functions with respect to their props.`
+
+In computer programming, a `pure function` has the following properties:
+
+1. It's return value is the same for the arguments (no variation with local static variable, non-local variables, mutable reference arguments or I/O streams)
+
+2. It's evaluation has no side effects (no mutation of static variables, non-local variables, mutable reference arguemnts or I/O streams)
+
+
+### Functional Component
+
+```javascript
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+
+### Class Components
+
+```javascript
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+### Converting a Function to a Class
+
+1. Create an [ES6 Class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+2. Add a single empty method to it called `render()`
+3. Move the body of the function into the `render()` method
+4. Replace props with `this.props` in the `render` body
+5. Delete the remaining empty function declaration
+
+This:
+
+```javascript
+function Clock(props) {
+  return (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {props.date.toLocaleTimeString()}.</h2>
+    </div>
+  );
+}
+```
+
+To this:
+
+``` javascript
+class Clock extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.props.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+```
+
+Render the component:
+
+```javascript
+function tick() {
+  ReactDOM.render(
+    <Clock date={new Date()} />,
+    document.getElementById('root')
+  );
+}
+
+setInterval(tick, 1000);
+```
+
+The render method will be called each time an update happens, but as long as we render `<Clock />` into the same DOM node, only a single instance of the Clock class will be used.
+
+## Adding Local State to a Class
+
+With the above example, we will move the `date` from props to state like so:
+
+1. Replace `this.props.date` with `this.state.date` in the `render()` method.
+2. Add a [Class Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#Constructor) that assigns the initial `this.state`
+3. Pass `props` to the base constructor. `Class` components should always call the base constructor with `props`
+4. Remove the `date` props from the `<Clock />` element
+
+The result is this:
+
+```javascript
+class Clock extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {date: new Date()}
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+)
+```
+
+But we will need to have the clock update itself every second
+
+## Adding Lifecycle Methods to a Class
+
+## State
+
+- Only usable with class components (unless you are using hooks!)
+- Props are not state
+- State is a JS object that contains data relevant to a component
+- Updating 'state' on a component causes the component to (almost) instantly re-render
+- State must be initialized when a component is created
+- State can only be updated using the function `setState`
 
 ## Life Cycle Methods
 
@@ -190,9 +508,10 @@ This lifecyle is called anytime our data changes, via `setState` or when a compo
 
 ### componentWillUnmount
 
-Good for clean, especially non-React stuff
+Good for cleanup, especially non-React stuff
 
 ![Component Lifecycle](component-lifecycle.png)
+
 ![Other Lifecycles](other-lifecycles.png)
 
 ## Redux
