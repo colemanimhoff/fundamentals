@@ -1,8 +1,8 @@
 # Testing
 
-![Testing](testing.png)
+![Testing](assets/testing.png)
 
-`create-react-app` gives us the following dependancies:
+`create-react-app` gives us the following dependencies:
 
 #### React
 
@@ -19,7 +19,7 @@ Automated test runner
 `npm test` or `npm run test` did the following:
 
 1. Test test running stars up
-2. Jest finds all files ending in `.test.js` and executes tests indide of them
+2. Jest finds all files ending in `.test.js` and executes tests inside of them
 3. Jest prints out results of tests to the terminal
 4. Jest waits for a file to change, then runs all tests again
 
@@ -44,7 +44,7 @@ App Component
 
 Anytime you run tests, follow these steps:
 
-1. Look at each invididual part of your application (Reducer, Action, Component, Hook, etc)
+1. Look at each individual part of your application (Reducer, Action, Component, Hook, etc)
 2. Imagine telling a friend 'heres what this piece of code does'
 3. Write a test to verify each part does what you expect
 
@@ -69,20 +69,20 @@ Jest will read files the following structure:
 `(args2)` - function that has the test logic
 
 Jest is ran from the command line environment
-React code is ran from the browswer
+React code is ran from the browser
 
 Jest installs `JSDOM`, which is a JavaScript implementation of the DOM and imitates the browser when we run test
 
 `const div = document.createElement('div')` (creates a div, not a real div, exists in memory)
 `ReactDOM.render(<App />, div)` (renders div)
-`ReactDOM.unmountComponentAtNode(div)` (cleanup - looks at the div, finds the app component, and destorys that app component)
+`ReactDOM.unmountComponentAtNode(div)` (cleanup - looks at the div, finds the app component, and destroys that app component)
 
 ### Test Expectations
 
 `expect` - global function
 `(value)` - the value we want to verify
 `mather statement` - designates how we want to inspect the 'subject'
-`expected value` - expected value, its what we want our 'subjeect' to be
+`expected value` - expected value, its what we want our 'subject' to be
 
 ### Limiting Test Knowledge
 
@@ -102,11 +102,11 @@ Shallow Render
 
 Full DOM Render
 
-- A functions that takes a component and renders an instanst of that component, it's attributes, and all it's children as well as all attributes (onClick, etc)
+- A functions that takes a component and renders an instant of that component, it's attributes, and all it's children as well as all attributes (onClick, etc)
 
 ### beforeEach | afterEach
 
-Helper functions help reduce repetetive code. For example, a common dependancy or cleanup
+Helper functions help reduce repetitive code. For example, a common dependency or cleanup
 
 ### Simulating events
 
@@ -122,7 +122,7 @@ allows us to mock an event
 When `setState` is called, the component is re-rendered asynchronously. This is an issue when it comes to testing, because we need to wait for the re-render to kick in
 
 `.update`
-forces the component to rerender
+forces the component to re-render
 
 `.prop(key)`
 allows us to pull props from an element
@@ -167,7 +167,7 @@ When testing reducers and action creators, create testing directories inside the
 When testing reducers, you can create mock actions and reducers like so:
 
 ```javascript
-it('handles actions of tyupe SAVE_COMMENT', () => {
+it('handles actions of type SAVE_COMMENT', () => {
   const action = {
     type: SAVE_COMMENT,
     payload: 'New Comment',
@@ -184,14 +184,14 @@ It is important to test your reducers to handle actions with unknown types:
 it('handles action with unknown type', () => {
   const newState = commentsReducer([], { type: 'UNKNOWN_TYPE' }) // the action can also be {}
 
-  expect(newState).toEqual([]) // defualt case in reducer
+  expect(newState).toEqual([]) // default case in reducer
 })
 ```
 
 When testing actions, you need to check the type and payload:
 
 ```javascript
-describe('saveComent', () => {
+describe('saveComment', () => {
   it('has the correct type', () => {
     const action = saveComment()
 
@@ -222,7 +222,7 @@ beforeEach(() => {
 })
 
 export default ({ children, initialState = {} }) => {
-  // set an intial state to `initialState` so you don't pass undefined
+  // set an initial state to `initialState` so you don't pass undefined
   return (
     <Provider store={createStore(reducers, initialState)}>{children}</Provider>
   )
@@ -231,9 +231,9 @@ export default ({ children, initialState = {} }) => {
 
 ## Integration Testing
 
-![Testing](testing-xhr.png)
+![Testing](assets/testing-xhr.png)
 
-In order to test xhr calls to external apis, we need some additional dependancies to make that happen.
+In order to test xhr calls to external apis, we need some additional dependencies to make that happen.
 
 There is a great library called moxios which allows you to mock api calls.
 
@@ -276,3 +276,67 @@ it('can fetch a list of comments and display them', (done) => {
   })
 })
 ```
+
+### Middleware
+
+Where does middleware come into play?
+
+![Middleware](assets/middleware.png)
+
+Applying middleware with `redux`
+
+```javascript
+applyMiddleware(reduxPromise)
+```
+
+What is happening with `redux-promise`
+
+![Redux with Middleware](assets/redux-with-middleware.png)
+
+If we put a `debugger` statement in our commentsReducer on line 8, we can log out the action our console by just typing `action`. We we see a resolved promise with our comments in the response body.
+
+If we remove the middleware and do the same, we will see a pending promise. This is because the action instantly gets passed to the reducer. The `redux-promise` middleware allows us to wait slightly longer for that promise to resolve or reject.
+
+### Middleware Stack
+
+In redux, we can have any many middleware pieces as we want. We refer to this as the middleware stack. When we have a middleware stack, each piece of middleware has the ability to inspect the action and decide if it needs to do something with it and then passes it on to the next.
+
+![Middleware Stack](assets/middleware-stack.png)
+
+### Making your own Middleware
+
+![Async Middleware](assets/async-middleware.png)
+
+Create a `middleware` directory inside `src`
+
+When creating middleware, we have a series of functions that return each other.
+
+```javascript
+export default function ({ dispatch }) {
+  return function (next) {
+    return function (action) {
+
+    }
+  }
+}
+```
+
+or...
+
+```javascript
+export default ({ dispatch }) => (next) => (action) => {
+  //
+}
+```
+
+or...
+
+```javascript
+export default ({ dispatch }) =>
+  (next) =>
+    (action) => {
+      //
+    }
+```
+
+Let's use option #2...

@@ -5,8 +5,14 @@
     "templating"
   ],
   "cSpell.ignoreWords": [
+    "browserslist",
+    "devtools",
+    "extension",
     "inital",
     "inital state",
+    "moxios",
+    "redux",
+    "redux devtools extension",
     "state",
     "unmount",
     "unmounting"

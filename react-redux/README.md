@@ -861,4 +861,17 @@ We need to make sure we pass props to our child component like so:
 
 ```javascript
 <ChildComponent {...this.props} />
-````
+```
+
+### Common Mistakes with React
+
+1. If you have a component that only only being used in one parent component, keep that component next to it's parent. Do not store it in global components
+2. Avoid building a monolithic application. When you get a project, make sure to identify your layouts, navigation, components, and fragments. Make sure to reuse as many components as possible to avoid duplicate code, make things flexible, and maintainable. Try to avoid 100+ lines of code in one file
+3. Keep business logic out of components. This belongs in the underlying page and that information should be passed to your components.
+4. Avoid Redux to manage state, unless it is absolutely necessary. Do you absolutely need it? Consider using local state in a parent component or context API.
+5. Make sure to use the correct lifecycle methods.
+6. Unit test to avoid regression and to have complete coverage
+7. Plan before you code
+8. Keep up to date with your upgrades
+9. Pass the correct prop types
+
