@@ -80,6 +80,10 @@ const carSpecs = {
 };
 ```
 
+##### Interfaces
+
+Creates a new type, describing the property names and value types of an object
+
 ##### Classes
 
 A blueprint to create an object with some fields (values) and methods (functions) to represent a "thing".
@@ -95,7 +99,3 @@ Keywords that we can place on methods or properties inside of a class.
 `protected` - This method can be called by other methods in this class, or by other methods in child classes
 
 ### Design Patterns
-
-#### Interfaces
-
-Creates a new type, describing the property names and value types of an object
