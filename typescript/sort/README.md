@@ -236,7 +236,7 @@ export abstract class Sorter {
 ```typescript
 import { Sorter } from './Sorter';
 
-// whenever we have a class that extends (inherits) from another, we need to call the super function inside the constructor to make sure setup code from the parent class gets executed
+// whenever we have a class that extends (Inherits) from another, we need to call the super function inside the constructor to make sure setup code from the parent class gets executed
 
 export class NumbersCollection extends Sorter {
   constructor(public data: number[]) {
@@ -404,3 +404,7 @@ console.log(numbersCollection.data);
 console.log(charactersCollection.data);
 linkedList.print();
 ```
+
+## Interfaces vs Inheritence & Abstract Classes
+
+![Iterfaces vs Inheritence & Abstract Classes](interfaces-vs-inheritance-and-abstract-classes.png)
