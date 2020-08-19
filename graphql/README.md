@@ -58,3 +58,15 @@ GraphQL is only the query language that has a reference implementation in JavaSc
 1. GraphQL is in it's early stages
 2. Apollo updates are rapid, leaving some obsolete versions neglected
 3. Competition to Apollo are limited in comparison
+
+## Apollo Client Alternatives (for React)
+
+1. Relay - created by Facebook
+2. urlql - created by Formidable Labs as a more simple alternative to Apollo
+3. graphql.js - should not be mistaken for the GraphQL reference implementation
+4. AWS Amplify GraphQL Client - for cloud-enabled applications
+
+## Apollo Server Alternatives (for Node)
+
+1. express-graphql - lower-level API to connect GraphQL to express
+2. graphql-yoga - fully-featured GraphQL Server with focus on easy setup, performance, and great developer experience
