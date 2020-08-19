@@ -373,3 +373,64 @@ We can use `directives` to query data from your GraphQL API and can be applied t
 An `include directive` includes the field when the `Boolean` type is set to true and the `skip directive`, which excludes it instead. We can decide if we want to include the forkCount in the `variables` object.
 
 ### GraphQL Operation: Mutation
+
+Used for `writing` data instead of reading it and shares the same principles as a `query`: it has fields and objects, arguments and variables, fragments and operation names, as well as directives and nested objects for the return result.
+
+With mutations, you can specify data as fields and objects that should be returned after it `mutates` into something acceptable.
+
+```javascript
+`query {
+  organization(login: "the-road-to-learn-react") {
+    name
+    url
+    repository(name: "the-road-to-learn-react") {
+      id
+      name
+    }
+	}
+}
+`
+```
+
+The query above will return the following id:
+`MDEwOlJlcG9zaXRvcnk2MzM1MjkwNw==`
+
+Mutation:
+
+```javascript
+`mutation AddStar($repositoryId: ID!) {
+  addStar(input: { starrableId: $repositoryId }) {
+    starrable {
+      id
+      viewerHasStarred
+    }
+  }
+}`
+```
+
+Variables:
+
+```json
+{
+"repositoryId": "MDEwOlJlcG9zaXRvcnk2MzM1MjkwNw=="
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "addStar": {
+      "starrable": {
+        "id": "MDEwOlJlcG9zaXRvcnk2MzM1MjkwNw==",
+        "viewerHasStarred": true
+      }
+    }
+  }
+}
+```
+
+The mutation's name is `addStar` (given by github), which you are required to pass in a `starrableId` as `input` to identify the repository. This is a `named mutation` called `AddStar`. It's up to you to give it any name. Lastly, we can define what fields we want in our response. In this case, we are asking for `id` and `viewerHasStarred`. 
+
+### GraphQL Pagination
