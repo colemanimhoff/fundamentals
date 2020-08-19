@@ -328,3 +328,48 @@ Response:
   }
 }
 ```
+
+We can use `directives` to query data from your GraphQL API and can be applied to fields and objects:
+
+```javascript
+`query OrganizationForLearningReact(
+  $organization: String!,
+  $repository: String!,
+  $withFork: Boolean!
+) {
+  organization(login: $organization) {
+    name
+    url
+    repository(name: $repository) {
+      name
+      forkCount @include(if: $withFork)
+    }
+  }
+}`
+```
+
+```json
+{
+    "organization": "the-road-to-learn-react", "repository":    "the-road-to-learn-react-chinese",
+    "withFork": true
+}
+```
+
+```json
+{
+  "data": {
+    "organization": {
+      "name": "The Road to React",
+      "url": "https://github.com/the-road-to-learn-react",
+      "repository": {
+        "name": "the-road-to-learn-react-chinese",
+        "forkCount": 141
+      }
+    }
+  }
+}
+```
+
+An `include directive` includes the field when the `Boolean` type is set to true and the `skip directive`, which excludes it instead. We can decide if we want to include the forkCount in the `variables` object.
+
+### GraphQL Operation: Mutation
