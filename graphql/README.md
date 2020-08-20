@@ -568,3 +568,70 @@ Now, we can use the cursor of the second repository to next the next 2, using th
   }
 }
 ```
+
+To keep the query dynamic, we extract its arguments as variables  The `after` argument can be `undefined` to retrieve the first page.
+
+There are some additional ways to use meta information for your paginated list. You can remove the `cursor` field for an individual edge, but add the `pageInfo` object with its `endCursor` and `hasNextPage` fields. You can also request the `totalCount` of the list:
+
+```javascript
+`query OrganizationForLearningReact {
+  organization(login: "the-road-to-learn-react") {
+    name
+    url
+    repositories(first: 2 after:"Y3Vyc29yOnYyOpHOBGhimw==") {
+      totalCount
+      edges {
+        node {
+          name
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}`
+```
+
+```json
+{
+  "data": {
+    "organization": {
+      "name": "The Road to React",
+      "url": "https://github.com/the-road-to-learn-react",
+      "repositories": {
+        "totalCount": 72,
+        "edges": [
+          {
+            "node": {
+              "name": "react-local-storage"
+            }
+          },
+          {
+            "node": {
+              "name": "react-router-dynamic-routes-example"
+            }
+          }
+        ],
+        "pageInfo": {
+          "endCursor": "Y3Vyc29yOnYyOpHOBlttHg==",
+          "hasNextPage": true
+        }
+      }
+    }
+  }
+}
+```
+
+`endCursor` and/or `hasNextPage` can be used to retrieve the successive list
+
+## React with GraphQL
+
+To access the client-side application:
+
+```bash
+cd react-graphql-github-vanilla
+```
+
+and follow instructions in the README.md
