@@ -1,13 +1,24 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-export const Repository = ({ repository, onFetchMoreIssues }) => {
+export const Repository = ({
+    repository,
+    onFetchMoreIssues,
+    onStarRepository
+}) => {
     return (
         <div>
             <p>
                 <strong>In Repository: </strong>
                 <a href={repository.url}>{repository.name}</a>
             </p>
+            <Button
+            type="button"
+            onClick={() => onStarRepository(repository.id, repository.viewerHasStarred)}
+            >
+              {repository.stargazers.totalCount + ' '}
+              {repository.viewerHasStarred ? 'Unstar' : 'Star'}
+            </Button>
             <ul>
                 {repository.issues.edges.map(issue => (
                     <li key={issue.node.id}>

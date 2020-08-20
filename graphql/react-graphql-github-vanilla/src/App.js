@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Form, Button } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Form, Button } from 'react-bootstrap';
+import { ADD_STAR, GET_ISSUES_OF_REPOSITORY, REMOVE_STAR } from './graphQL';
 import { Organization } from './components/Organization';
 
 const App = () => {
@@ -19,40 +20,6 @@ const App = () => {
       Authorization: `bearer ${process.env.REACT_APP_GITHUB_PERSONAL_ACCESS_TOKEN}`
     }
   });
-  const GET_ISSUES_OF_REPOSITORY = `
-    query ($organization: String!, $repository: String!, $cursor: String) {
-      organization(login: $organization) {
-        name
-        url
-        repository(name: $repository) {
-          name
-          url
-          issues(first: 5, after: $cursor, states: [OPEN]) {
-            edges {
-              node {
-                id
-                title
-                url
-                reactions(last: 3) {
-                  edges {
-                    node {
-                      id
-                      content
-                    }
-                  }
-                }
-              }
-            }
-            totalCount
-            pageInfo {
-              endCursor
-              hasNextPage
-            }
-          }
-        }
-      }
-    }
-  `;
   const resolveIssuesQuery = (queryResult, cursor) => (state) => {
     const { data, errors } = queryResult.data;
 
@@ -83,6 +50,54 @@ const App = () => {
       errors
     };
   };
+  const resolveAddStarMutation = (mutationResult) => (state) => {
+    const { viewerHasStarred } = mutationResult.data.data.addStar.starrable;
+    const { totalCount } = state.organization.repository.stargazers;
+
+    return {
+      ...state,
+      organization: {
+        ...state.organization,
+        repository: {
+          ...state.organization.repository,
+          viewerHasStarred,
+          stargazers: {
+            totalCount: totalCount + 1
+          }
+        }
+      }
+    }
+  };
+  const resolveRemoveStarMutation = (mutationResult) => (state) => {
+    const { viewerHasStarred } = mutationResult.data.data.removeStar.starrable;
+    const { totalCount } = state.organization.repository.stargazers;
+  
+    return {
+      ...state,
+      organization: {
+        ...state.organization,
+        repository: {
+          ...state.organization.repository,
+          viewerHasStarred,
+          stargazers: {
+            totalCount: totalCount - 1,
+          }
+        }
+      }
+    };
+  };
+  const addStarToRepository = (repositoryId) => {
+    return axiosGitHubGraphQL.post('', {
+      query: ADD_STAR,
+      variables: { repositoryId }
+    })
+  };
+  const removeStarFromRepository = (repositoryId) => {
+    return axiosGitHubGraphQL.post('', {
+      query: REMOVE_STAR,
+      variables: { repositoryId },
+    });
+  };
   const getIssuesOfRepository = (path, cursor) => {
     const [organization, repository] = path.split('/');
     return axiosGitHubGraphQL.post('', {
@@ -94,10 +109,19 @@ const App = () => {
     const result = await getIssuesOfRepository(path, cursor);
     setState(resolveIssuesQuery(result, cursor));
   };
-
   const onFetchMoreIssues = () => {
     const { endCursor } = state.organization.repository.issues.pageInfo;
     onFetchFromGitHub(state.path, endCursor);
+  };
+  const onStarRepository = async (repositoryId, viewerHasStarred) => {
+    let result;
+    if (viewerHasStarred) {
+      result = await removeStarFromRepository(repositoryId);
+      setState(resolveRemoveStarMutation(result));
+    } else {
+      result = await addStarToRepository(repositoryId);
+      setState(resolveAddStarMutation(result));
+    }
   };
 
   const handleOnChange = (e) => {
@@ -108,6 +132,9 @@ const App = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (state.path.trim() === '') {
+      return;
+    }
     onFetchFromGitHub(state.path);
   };
 
@@ -134,9 +161,10 @@ const App = () => {
       <div>
         {state.organization || state.errors
           ? <Organization
+            errors={state.errors}
             onFetchMoreIssues={onFetchMoreIssues}
             organization={state.organization}
-            errors={state.errors}
+            onStarRepository={onStarRepository}
           />
           : <p>No information yet...</p>}
       </div>
