@@ -7,9 +7,11 @@ import { Form, Button } from 'react-bootstrap';
 import { Organization } from './components/Organization';
 
 const App = () => {
-  const [errors, setErrors] = useState(null);
-  const [path, setPath] = useState('');
-  const [organization, setOrganization] = useState(null);
+  const [state, setState] = useState({
+    errors: null,
+    path: '',
+    organization: null
+  });
   const TITLE = 'React GraphQL Github Client';
   const axiosGitHubGraphQL = axios.create({
     baseURL: 'https://api.github.com/graphql',
@@ -18,48 +20,95 @@ const App = () => {
     }
   });
   const GET_ISSUES_OF_REPOSITORY = `
-    query ($organization: String!, $repository: String!) {
+    query ($organization: String!, $repository: String!, $cursor: String) {
       organization(login: $organization) {
         name
         url
         repository(name: $repository) {
           name
           url
-          issues(last: 5) {
+          issues(first: 5, after: $cursor, states: [OPEN]) {
             edges {
               node {
                 id
                 title
                 url
+                reactions(last: 3) {
+                  edges {
+                    node {
+                      id
+                      content
+                    }
+                  }
+                }
               }
+            }
+            totalCount
+            pageInfo {
+              endCursor
+              hasNextPage
             }
           }
         }
       }
     }
-`;
-  const fetchOrganization = async () => {
-    const [organization, repository] = path.split('/');
-    const result = await axiosGitHubGraphQL
-      .post('', {
-        query: GET_ISSUES_OF_REPOSITORY,
-        variables: { organization, repository }
-      });
+  `;
+  const resolveIssuesQuery = (queryResult, cursor) => (state) => {
+    const { data, errors } = queryResult.data;
 
-    if (result.data.errors) {
-      setErrors(result.data.errors);
-    } else {
-      setOrganization(result.data.data.organization);
+    if (!cursor) {
+      return {
+        ...state,
+        organization: data.organization,
+        errors
+      };
     }
+
+    const { edges: oldIssues } = state.organization.repository.issues;
+    const { edges: newIssues } = data.organization.repository.issues;
+    const updatedIssues = [...oldIssues, ...newIssues];
+
+    return {
+      ...state,
+      organization: {
+        ...data.organization,
+        repository: {
+          ...data.organization.repository,
+          issues: {
+            ...data.organization.repository.issues,
+            edges: updatedIssues
+          }
+        }
+      },
+      errors
+    };
+  };
+  const getIssuesOfRepository = (path, cursor) => {
+    const [organization, repository] = path.split('/');
+    return axiosGitHubGraphQL.post('', {
+      query: GET_ISSUES_OF_REPOSITORY,
+      variables: { organization, repository, cursor }
+    });
+  };
+  const onFetchFromGitHub = async (path, cursor) => {
+    const result = await getIssuesOfRepository(path, cursor);
+    setState(resolveIssuesQuery(result, cursor));
+  };
+
+  const onFetchMoreIssues = () => {
+    const { endCursor } = state.organization.repository.issues.pageInfo;
+    onFetchFromGitHub(state.path, endCursor);
   };
 
   const handleOnChange = (e) => {
-    setPath(e.target.value);
+    setState({
+      ...state,
+      path: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchOrganization();
-    setPath('');
+    onFetchFromGitHub(state.path);
   };
 
   return (
@@ -68,14 +117,14 @@ const App = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label htmlFor="url">
-            {'Show open issues for https://github.com/' + path}
+            {'Show open issues for https://github.com/' + state.path}
           </Form.Label>
           <Form.Control
             id="url"
             onChange={handleOnChange}
             placeholder="Enter organization and repo path..."
             type="text"
-            value={path}
+            value={state.path}
           />
         </Form.Group>
         <Button type="submit">
@@ -83,14 +132,13 @@ const App = () => {
         </Button>
       </Form>
       <div>
-        {
-          organization || errors
-            ? <Organization
-              organization={organization}
-              errors={errors}
-            />
-            : <p>No information yet...</p>
-        }
+        {state.organization || state.errors
+          ? <Organization
+            onFetchMoreIssues={onFetchMoreIssues}
+            organization={state.organization}
+            errors={state.errors}
+          />
+          : <p>No information yet...</p>}
       </div>
     </div>
   );
