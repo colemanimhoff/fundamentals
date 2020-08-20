@@ -434,3 +434,137 @@ Response:
 The mutation's name is `addStar` (given by github), which you are required to pass in a `starrableId` as `input` to identify the repository. This is a `named mutation` called `AddStar`. It's up to you to give it any name. Lastly, we can define what fields we want in our response. In this case, we are asking for `id` and `viewerHasStarred`. 
 
 ### GraphQL Pagination
+
+```javascript
+`query OrganizationForLearningReact {
+    organization(login: "the-road-to-learn-react") {
+        name
+        url
+        repositories(first: 2) {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+    }
+}`
+```
+
+```json
+{
+  "data": {
+    "organization": {
+      "name": "The Road to React",
+      "url": "https://github.com/the-road-to-learn-react",
+      "repositories": {
+        "edges": [
+          {
+            "node": {
+              "name": "the-road-to-learn-react"
+            }
+          },
+          {
+            "node": {
+              "name": "hackernews-client"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+The `first` argument is passed to the `repositories` list field that specifies how many items you want in your response. The query shape doesn't need to follow the `edges` and `node` structure, but ti's one of a few solutions to define paginated data structures and lists in GraphQL.
+
+You can query for the `cursor` field to use to get the next set of data:
+
+```javascript
+`query OrganizationForLearningReact {
+  organization(login: "the-road-to-learn-react") {
+    name
+    url
+    repositories(first: 2) {
+      edges {
+        node {
+          name
+        }
+        cursor
+      }
+    }
+  }
+}`
+```
+
+```json
+{
+  "data": {
+    "organization": {
+      "name": "The Road to React",
+      "url": "https://github.com/the-road-to-learn-react",
+      "repositories": {
+        "edges": [
+          {
+            "node": {
+              "name": "the-road-to-learn-react"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOA8awSw=="
+          },
+          {
+            "node": {
+              "name": "hackernews-client"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOBGhimw=="
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Now, we can use the cursor of the second repository to next the next 2, using the `after` argument.
+
+```javascript
+`query OrganizationForLearningReact {
+  organization(login: "the-road-to-learn-react") {
+    name
+    url
+    repositories(first: 2 after:"Y3Vyc29yOnYyOpHOBGhimw==") {
+      edges {
+        node {
+          name
+        }
+        cursor
+      }
+    }
+  }
+}`
+```
+
+```json
+{
+  "data": {
+    "organization": {
+      "name": "The Road to React",
+      "url": "https://github.com/the-road-to-learn-react",
+      "repositories": {
+        "edges": [
+          {
+            "node": {
+              "name": "react-local-storage"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOBUuT2A=="
+          },
+          {
+            "node": {
+              "name": "react-router-dynamic-routes-example"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOBlttHg=="
+          }
+        ]
+      }
+    }
+  }
+}
+```
