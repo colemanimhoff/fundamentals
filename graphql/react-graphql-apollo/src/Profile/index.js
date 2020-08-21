@@ -2,8 +2,9 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
-import { RepositoryList } from '../Repository/index';
+import { ErrorMessage } from '../Error';
 import { Loading } from '../Loading';
+import { RepositoryList } from '../Repository/index';
 
 export const GET_CURRENT_USER = gql` {
   viewer {
@@ -40,10 +41,13 @@ export const GET_CURRENT_USER = gql` {
 
 export const Profile = () => (
   <Query query={GET_CURRENT_USER}>
-    {({ data, loading }) => {
+    {({ data, loading, error }) => {
+      if (error) {
+        return <ErrorMessage error={error} />;
+      }
       if (loading) {
         return <Loading />;
-      };
+      }
       const { viewer } = data;
       return <RepositoryList repositories={viewer.repositories} />;
     }}
