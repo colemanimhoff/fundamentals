@@ -5,8 +5,10 @@ import { Query } from 'react-apollo';
 import { ErrorMessage } from '../Error';
 import { Loading } from '../Loading';
 import { RepositoryList } from '../Repository/index';
+import { REPOSITORY_FRAGMENT } from '../Repository/index.js';
 
-const GET_CURRENT_USER = gql` {
+const GET_CURRENT_USER = gql`
+{
   viewer {
     repositories(
       first: 5
@@ -14,30 +16,13 @@ const GET_CURRENT_USER = gql` {
     ){
       edges {
         node {
-          id
-          name
-          url
-          descriptionHTML
-          primaryLanguage {
-            name
-          }
-          owner {
-            login
-            url
-          }
-          stargazers {
-            totalCount
-          }
-          viewerHasStarred
-          watchers {
-            totalCount
-          }
-            viewerSubscription
+          ...repository
         }
       }
     }
   }      
-}`;
+}
+${REPOSITORY_FRAGMENT}`;
 
 export const Profile = () => (
   <Query query={GET_CURRENT_USER}>
