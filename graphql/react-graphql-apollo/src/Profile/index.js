@@ -6,7 +6,7 @@ import { ErrorMessage } from '../Error';
 import { Loading } from '../Loading';
 import { RepositoryList } from '../Repository/index';
 
-export const GET_CURRENT_USER = gql` {
+const GET_CURRENT_USER = gql` {
   viewer {
     repositories(
       first: 5
@@ -37,7 +37,7 @@ export const GET_CURRENT_USER = gql` {
       }
     }
   }      
-} `;
+}`;
 
 export const Profile = () => (
   <Query query={GET_CURRENT_USER}>
