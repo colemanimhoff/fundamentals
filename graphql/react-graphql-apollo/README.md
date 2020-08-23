@@ -103,4 +103,39 @@ Using the `refetchQueries` option, or a `Mutation` component to trigger a refetc
 
 # update
 
-We can use `update` prop from `Mutation` to pass a function into it. This function has access to the Apollo Client and the mutation result in its argument. Both are needed to update data so you can destructure the mutation result in the function signature.
+We can use `update` prop from `Mutation` to pass a function into it.
+
+First, extract the function to keep `jsx` clean. This function has access to the Apollo Client and the mutation result in its argument. Both are needed to update data so you can de-structure the mutation result in the function signature. We can deconstruct the data object from the `mutation result` to get the repository id. The other option is the pass the `repositoryId` into `updateAddStar`. We have access to that in the `Repository` component.
+
+Second, we use the Apollo Client to read data from the cache, but also write data to it. The goal is to:
+
+1. `read` the starred repository from the cache via it's `id`
+2. increment the `stargazers` count by 1
+3. `write` the updated repository to the `cache`
+
+The Apollo Client `cache` normalizes and stores queried data. Otherwise, the repository would be a deeply nested entity in a list of repositories for the query structure used in the `Profile` component. Normalization of a data structure makes it possible to retrieve entities by their identifier and their GraphQL `__typename` meta field. The resulting entity has all properties specified in the fragment. If there is a field in the fragment not found on the entity in the cache, you may see the following error message: `Can’t find field __typename on object .... That’s why we use the identical fragment to read from the local cache to query the GraphQL API`.
+
+After you have retrieved the repository entity with a fragment and its composite key, you can update the count of stargazers and write back the data to your cache. In this case, increment the number of stargazers.
+
+```javascript
+const updateAddStar = (
+  client,
+  { data: { addStar: { starrable: { id } } } },
+  ) => {
+    const repository = client.readFragment({ id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+    });
+    const totalCount = repository.stargazers.totalCount + 1;
+    client.writeFragment({
+      id: `Repository:${id}`, fragment: REPOSITORY_FRAGMENT, data: {
+      ...repository, stargazers: {
+        ...repository.stargazers, totalCount,
+      },
+    },
+  });
+};
+```
+
+1. `read` the repository entity from the Apollo Client using an identifier and the fragment
+2. `update` the information of the entity
+3. `write` with updated information, keeping all remaining information intact using the JavaScript spread operator
