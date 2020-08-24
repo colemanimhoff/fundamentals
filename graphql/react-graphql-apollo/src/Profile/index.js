@@ -7,17 +7,22 @@ import { Loading } from '../Loading';
 import { RepositoryList } from '../Repository/index';
 import { REPOSITORY_FRAGMENT } from '../Repository/index.js';
 
-const GET_CURRENT_USER = gql`
-{
+const GET_REPOSITORIES_OF_CURRENT_USER = gql`
+query ($cursor: String) {
   viewer {
     repositories(
       first: 5
       orderBy: { direction: DESC, field: STARGAZERS }
-    ){
+      after: $cursor
+    ) {
       edges {
         node {
           ...repository
         }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }      
@@ -25,16 +30,23 @@ const GET_CURRENT_USER = gql`
 ${REPOSITORY_FRAGMENT}`;
 
 export const Profile = () => (
-  <Query query={GET_CURRENT_USER}>
-    {({ data, loading, error }) => {
+  <Query
+    notifyOnNetworkStatusChange={true}
+    query={GET_REPOSITORIES_OF_CURRENT_USER}
+  >
+    {({ data, loading, error, fetchMore }) => {
       if (error) {
         return <ErrorMessage error={error} />;
       }
-      if (loading) {
+      if (loading && !data) {
         return <Loading />;
       }
       const { viewer } = data;
-      return <RepositoryList repositories={viewer.repositories} />;
+      return <RepositoryList
+        loading={loading}
+        fetchMore={fetchMore}
+        repositories={viewer.repositories}
+      />;
     }}
   </Query>
 );

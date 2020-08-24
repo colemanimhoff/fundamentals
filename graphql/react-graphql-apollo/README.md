@@ -1,5 +1,7 @@
 # React GraphQL GitHub Apollo
 
+Coding along with [The Road to GraphQL](https://www.robinwieruch.de/the-road-to-graphql-book)
+
 A react app using GraphQL, Apollo, and the GitHub GraphQL API
 
 ## Error Handling
@@ -140,7 +142,7 @@ const updateAddStar = (
 2. `update` the information of the entity
 3. `write` with updated information, keeping all remaining information intact using the JavaScript spread operator
 
-## Optimistic UI in React
+## Optimistic UI with Apollo in React
 
 Optimistic UI with React Apollo makes everything onscreen more synchronous. For example, when liking a post, the like areas immediately. The request that is sent to the backend is asynchronous and doesn't resolve immediately. `Optimistic UI` immediately assumes a successful response. With a failed request, the optimistic UI performs a rollback and updates itself accordingly. 
 
@@ -235,3 +237,74 @@ const updateWatch = (
 ```
 
 Clicking the "Watch" and "Unwatch" buttons changes synchronously, because of `optimistic ui`. The additional benefit of the optimistic response is that it makes the count of watchers update optimistically update too. The function used in the update prop is called twice now, the first time with the optimistic response, and the second with a response from GitHub’s GraphQL API.
+
+## Pagination with Apollo in React
+
+In order to implement pagination, we must extend our `GET_REPOSITORIES_OF_CURRENT_USER` query:
+
+```javascript
+const GET_REPOSITORIES_OF_CURRENT_USER = gql`
+query ($cursor: String) {
+  viewer {
+    repositories(
+      first: 5
+      orderBy: { direction: DESC, field: STARGAZERS }
+      after: $cursor
+    ) {
+      edges {
+        node {
+          ...repository
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }      
+}
+${REPOSITORY_FRAGMENT}`;
+```
+The `endCursor` can be used as the `$cursor` variable when fetching the next pages of repos, but the `hasNextPage` can disable the functionality to fetch another page. The initial request to fetch the first page of repositories will have a `$cursor` variable and GitHub’s GraphQL API will handle this. Every other request to fetch more items from the list will send a defined `after` argument with the cursor, which is the `endCursor` from the query.
+
+Next we can conditionally render a button if the result's `hasNextPage` property is true:
+
+```javascript
+const updateQuery = (previousResult, { fetchMoreResult }) => {
+  if (!fetchMoreResult) {
+    return previousResult;
+  }
+
+  return {
+    ...previousResult,
+    viewer: {
+      ...previousResult.viewer,
+      repositories: {
+        ...previousResult.viewer.repositories,
+        ...fetchMoreResult.viewer.repositories,
+        edges: [
+          ...previousResult.viewer.repositories.edges,
+          ...fetchMoreResult.viewer.repositories.edges,],
+      }
+    }
+  };
+};
+
+  {repositories.pageInfo.hasNextPage && (
+    <button
+      type="button"
+      onClick={() => fetchMore({
+        variables: {
+          cursor: repositories.pageInfo.endCursor
+        },
+        updateQuery
+      })}
+    >
+      More Repositories
+    </button>
+  )}
+```
+
+The `fetchMore` function performs the query from the initial request, and takes a configuration object, which can be used to override variables. With pagination, this means you pass the endCursor of the previous query result to use it for the query as after argument. Otherwise, you would perform the initial request again because no variables are specified.
+
+The `updateQuery` function, using the spread operator, is used to tell `Apollo Client` how to merge the previous result with the new one.

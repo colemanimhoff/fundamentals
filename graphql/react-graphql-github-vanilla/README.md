@@ -1,5 +1,7 @@
 # React with GraphQL
 
+Coding along with [The Road to GraphQL](https://www.robinwieruch.de/the-road-to-graphql-book)
+
 This application implements graphql without a dedicated library for GraphQL and, instead, uses only axios and HTTP to communicate with the GraphQL API.
 
 ## Getting Started
