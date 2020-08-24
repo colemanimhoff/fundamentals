@@ -53,6 +53,14 @@ The `Query` component uses this pattern to access the `result` of the query. The
 
 When starring a repo, the `viewerHasStarred` boolean is returned in your mutation result. Apollo Client is clever enough to update the repository entity, which is normalized and accessible in the cache. You don’t need to handle the local state management yourself, since Apollo Client figures it out for you as long as you provide useful information in the mutation’s result. But, the `count` of starts after the mutation is not updated. We will have to handle the update in Apollo Client's cache yourself.
 
+Note you can pass a condition into the `skip` prop of a `Query` component to skip executing the query if that condition is true.
+
+```javascript
+<Query
+  skip={organizationName === ''}
+/>
+```
+
 ## Fragments
 
 `Fragments` can be used to split parts of a query to reuse later.
@@ -310,4 +318,8 @@ The `fetchMore` function performs the query from the initial request, and takes 
 The `updateQuery` function, using the spread operator, is used to tell `Apollo Client` how to merge the previous result with the new one.
 
 ## Caching Queries with Apollo Client in React
+
+Apollo Client caches query requests. When navigating from the Profile page to the Organization page and back to the Profile page, the results appear immediately because the Apollo Client checks its cache before making the query to the remote GraphQL API.
+
+
 

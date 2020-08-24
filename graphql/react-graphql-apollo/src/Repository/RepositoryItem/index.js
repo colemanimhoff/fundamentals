@@ -130,13 +130,13 @@ export const RepositoryItem = ({
           <Link href={url}>{name}</Link>
         </h2>
         <div className="RepositoryItem-title-action">
-          {!viewerHasStarred ? (
+          {!viewerHasStarred ? ( // sans optimistic ui to see the different in update times
             <Mutation
               mutation={STAR_REPOSITORY}
               update={updateAddStar}
               variables={{ id }}
             >
-              {(addStar, { data, loading, error }) => (
+              {(addStar) => (
                 <Button
                   className={'RepositoryItem-title-action'}
                   onClick={addStar}
@@ -151,10 +151,10 @@ export const RepositoryItem = ({
                 update={updateRemoveStar}
                 variables={{ id }}
               >
-                {(addStar, { data, loading, error }) => (
+                {(removeStar) => (
                   <Button
                     className={'RepositoryItem-title-action'}
-                    onClick={addStar}
+                    onClick={removeStar}
                   >
                     {stargazers.totalCount} Unstar
                   </Button>

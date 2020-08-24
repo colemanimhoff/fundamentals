@@ -43,8 +43,9 @@ export const Profile = () => (
       }
       const { viewer } = data;
       return <RepositoryList
-        loading={loading}
+        entry={'viewer'}
         fetchMore={fetchMore}
+        loading={loading}
         repositories={viewer.repositories}
       />;
     }}
