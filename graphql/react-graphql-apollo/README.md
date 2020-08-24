@@ -308,3 +308,6 @@ const updateQuery = (previousResult, { fetchMoreResult }) => {
 The `fetchMore` function performs the query from the initial request, and takes a configuration object, which can be used to override variables. With pagination, this means you pass the endCursor of the previous query result to use it for the query as after argument. Otherwise, you would perform the initial request again because no variables are specified.
 
 The `updateQuery` function, using the spread operator, is used to tell `Apollo Client` how to merge the previous result with the new one.
+
+## Caching Queries with Apollo Client in React
+
