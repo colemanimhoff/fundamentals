@@ -101,7 +101,7 @@ ${REPOSITORY_FRAGMENT}`;
 
 Using the `refetchQueries` option, or a `Mutation` component to trigger a refetch for all queries, is the naive approach for a mutation call. It isn't ideal because it costs another query reest to keep the data consistent after a mutation. The `Mutation` component offers a prop where you can insert update functionality that has access to the Apollo Client instance for the update mechanism.
 
-# update
+## update
 
 We can use `update` prop from `Mutation` to pass a function into it.
 
@@ -139,3 +139,99 @@ const updateAddStar = (
 1. `read` the repository entity from the Apollo Client using an identifier and the fragment
 2. `update` the information of the entity
 3. `write` with updated information, keeping all remaining information intact using the JavaScript spread operator
+
+## Optimistic UI in React
+
+Optimistic UI with React Apollo makes everything onscreen more synchronous. For example, when liking a post, the like areas immediately. The request that is sent to the backend is asynchronous and doesn't resolve immediately. `Optimistic UI` immediately assumes a successful response. With a failed request, the optimistic UI performs a rollback and updates itself accordingly. 
+
+Optimistic UI improves the user experience by omitting inconvenient feedback (e.g. loading indicators) for the user.
+
+First, we will write the mutation:
+
+```javascript
+const WATCH_REPOSITORY = gql`
+  mutation ($id: ID!, $viewerSubscription: SubscriptionState!) {
+    updateSubscription(
+      input: { state: $viewerSubscription, subscribableId: $id }
+    ) {
+      subscribable {
+        id
+        viewerSubscription
+      }
+    }
+  }
+`;
+```
+Then we implement the Mutation render prop component with the prop `optimisticResponse` and the pass the update function to the `update` prop.
+
+```javascript
+const VIEWER_SUBSCRIPTIONS = {
+  SUBSCRIBED: 'SUBSCRIBED',
+  UNSUBSCRIBED: 'UNSUBSCRIBED'
+};
+
+const isWatch = viewerSubscription => {
+  return viewerSubscription === VIEWER_SUBSCRIPTIONS.SUBSCRIBED;
+};
+
+const updateWatch = (
+  client,
+  {
+    data: {
+      updateSubscription: {
+        subscribable: { id, viewerSubscription }
+      }
+    }
+  }
+) => {
+  const repository = client.readFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+  });
+  let { totalCount } = repository.watchers; totalCount =
+    viewerSubscription === VIEWER_SUBSCRIPTIONS.SUBSCRIBED ? totalCount + 1
+      : totalCount - 1;
+  client.writeFragment({
+    id: `Repository:${id}`, fragment: REPOSITORY_FRAGMENT, data: {
+      ...repository, watchers: {
+        ...repository.watchers, totalCount
+      }
+    }
+  });
+};
+
+<Mutation
+  mutation={WATCH_REPOSITORY}
+  optimisticResponse={{
+    updateSubscription: {
+      __typename: 'Mutation',
+      subscribable: {
+        __typename: 'Repository',
+        id,
+        viewerSubscription: isWatch(viewerSubscription)
+          ? VIEWER_SUBSCRIPTIONS.UNSUBSCRIBED
+          : VIEWER_SUBSCRIPTIONS.SUBSCRIBED,
+      }
+    }
+  }}
+  variables={{
+    id,
+    viewerSubscription: isWatch(viewerSubscription)
+      ? VIEWER_SUBSCRIPTIONS.UNSUBSCRIBED
+      : VIEWER_SUBSCRIPTIONS.SUBSCRIBED
+  }}
+  update={updateWatch}
+>
+  {(updateSubscription, { data, loading, error }) => (
+    <Button
+      className="RepositoryItem-title-action"
+      onClick={updateSubscription}
+    >
+      {watchers.totalCount}{' '}
+      {isWatch(viewerSubscription) ? 'Unwatch' : 'Watch'}
+    </Button>
+  )}
+</Mutation>
+```
+
+Clicking the "Watch" and "Unwatch" buttons changes synchronously, because of `optimistic ui`. The additional benefit of the optimistic response is that it makes the count of watchers update optimistically update too. The function used in the update prop is called twice now, the first time with the optimistic response, and the second with a response from GitHub’s GraphQL API.
