@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 
+import Issues from '../../Issue/index.js';
 import { FetchMore } from '../../FetchMore/index.js';
 import { RepositoryItem } from '../RepositoryItem/index.js';
 
@@ -32,6 +33,10 @@ export const RepositoryList = ({ repositories, fetchMore, loading, entry }) => {
       return (
         <div key={node.id} className="RepositoryItem">
           <RepositoryItem {...node} />
+          <Issues
+            repositoryName={node.name}
+            repositoryOwner={node.owner.login}
+          />
         </div>
       );
     })}
