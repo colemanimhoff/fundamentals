@@ -1,6 +1,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { ApolloConsumer, Query } from 'react-apollo';
 import { withState } from 'recompose';
 
 
@@ -29,8 +29,6 @@ const TRANSITION_STATE = {
   [ISSUE_STATES.CLOSED]: ISSUE_STATES.NONE
 };
 
-const isShow = (issueState) => issueState !== ISSUE_STATES.NONE;
-
 const GET_ISSUES_OF_REPOSITORY = gql`
   query(
     $repositoryOwner: String!,
@@ -54,6 +52,27 @@ const GET_ISSUES_OF_REPOSITORY = gql`
   }
 `;
 
+const isShow = (issueState) => issueState !== ISSUE_STATES.NONE;
+
+const prefetchIssues = (
+  client,
+  issueState,
+  repositoryName,
+  repositoryOwner
+) => {
+  const nextIssueState = TRANSITION_STATE[issueState];
+  if (isShow(nextIssueState)) {
+    client.query({
+      query: GET_ISSUES_OF_REPOSITORY,
+      variables: {
+        repositoryOwner,
+        repositoryName,
+        issueState: nextIssueState
+      }
+    });
+  }
+};
+
 const IssueList = ({ issues }) => (
   <div className="IssueList">
     {issues.edges.map(({ node }) => (
@@ -65,6 +84,32 @@ const IssueList = ({ issues }) => (
   </div>
 );
 
+const IssueFilter = ({
+  issueState,
+  onChangeIssueState,
+  repositoryOwner,
+  repositoryName
+}) => {
+  return (
+    <ApolloConsumer>
+      {(client) => (
+        <ButtonUnobtrusive
+          onClick={() => onChangeIssueState(TRANSITION_STATE[issueState])}
+          onMouseOver={() =>
+            prefetchIssues(
+              client,
+              issueState,
+              repositoryName,
+              repositoryOwner
+            )}
+        >
+          {TRANSITION_LABELS[issueState]}
+        </ButtonUnobtrusive>
+      )}
+    </ApolloConsumer>
+  );
+};
+
 const Issues = ({
   repositoryOwner,
   repositoryName,
@@ -73,11 +118,12 @@ const Issues = ({
 }) => {
   return (
     <div className="Issues">
-      <ButtonUnobtrusive
-        onClick={() => onChangeIssueState(TRANSITION_STATE[issueState])}
-      >
-        {TRANSITION_LABELS[issueState]}
-      </ButtonUnobtrusive>
+      <IssueFilter
+        issueState={issueState}
+        onChangeIssueState={onChangeIssueState}
+        repositoryName={repositoryName}
+        repositoryOwner={repositoryOwner}
+      />
       {isShow(issueState) && (
         <Query
           query={GET_ISSUES_OF_REPOSITORY}

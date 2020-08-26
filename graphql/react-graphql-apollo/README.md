@@ -321,5 +321,46 @@ The `updateQuery` function, using the spread operator, is used to tell `Apollo C
 
 Apollo Client caches query requests. When navigating from the Profile page to the Organization page and back to the Profile page, the results appear immediately because the Apollo Client checks its cache before making the query to the remote GraphQL API.
 
+## Prefetching in Apollo Client
 
+Prefetching is a UX technique that can be deployed to the opitimisic UI technique. To do this with `Apollo React`, you must execute the query in an imperative way by using the the Apollo Client instance directly via `ApolloProvider`.
 
+```javascript
+const prefetchIssues = (
+  client,
+  issueState,
+  repositoryName,
+  repositoryOwner
+) => {
+  const nextIssueState = TRANSITION_STATE[issueState];
+  if (isShow(nextIssueState)) {
+    client.query({
+      query: GET_ISSUES_OF_REPOSITORY,
+      variables: {
+        repositoryOwner,
+        repositoryName,
+        issueState: nextIssueState
+      }
+    });
+  }
+};
+```
+
+```javascript
+    <ApolloConsumer>
+      {(client) => (
+        <ButtonUnobtrusive
+          onClick={() => onChangeIssueState(TRANSITION_STATE[issueState])}
+          onMouseOver={() =>
+            prefetchIssues(
+              client,
+              issueState,
+              repositoryName,
+              repositoryOwner
+            )}
+        >
+          {TRANSITION_LABELS[issueState]}
+        </ButtonUnobtrusive>
+      )}
+    </ApolloConsumer>
+```
