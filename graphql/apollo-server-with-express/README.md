@@ -1,15 +1,35 @@
-# Simple Node Application
+# Apollo Server with Express
 
-[![Build Status](https://travis-ci.org/rwieruch/minimal-node-application.svg?branch=master)](https://travis-ci.org/rwieruch/minimal-node-application) [![Slack](https://slack-the-road-to-learn-react.wieruch.com/badge.svg)](https://slack-the-road-to-learn-react.wieruch.com/) [![Greenkeeper badge](https://badges.greenkeeper.io/rwieruch/minimal-node-application.svg)](https://greenkeeper.io/)
+## Schema
 
-An easy way to get started with JavaScript on the command line. [Read more about it](https://www.robinwieruch.de/minimal-node-js-babel-setup).
+The GraphQL `schema` provided to the Apollo Server is all the available data for reading and writing data via GraphQL. Schema consists of `type definitions`, starting with the mandatory top level `Query type` for reading data, followed by `fields` and `nested fields`. The leaf `nodes` of a schema are called `scalar types`, which consist of `String`, `Boolean`, `Int`, and more.
 
-[![Edit minimal-react-webpack-babel-setup](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/rwieruch/minimal-node-application/tree/master/?fontsize=14)
+```javascript
+const schema = gql`
+  type Query {
+    me: User
+  }
 
-## Installation
+  type User {
+    username: String!
+  }
+`;
+```
 
-* `git clone git@github.com:rwieruch/minimal-node-application.git`
-* `cd minimal-node-application`
-* `npm install`
-* `npm start`
-* optional: include *.env* in your *.gitignore*
+## Resolvers
+
+`Resolvers` are functions used to return data for fields from the schema. The data sources doesn't matter, because the data can be hardcoded, can come from a database, or from  another RESTful API endpoint. `Resolvers` are agnostic according to where the data comes from.
+
+```javascript
+const resolvers = {
+  Query: {
+    me: () => {
+      return {
+        username: 'Coleman Imhoff'
+      };
+    }
+  }
+};
+```
+
+## 
