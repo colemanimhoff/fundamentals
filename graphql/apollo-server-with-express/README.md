@@ -65,6 +65,9 @@ The default resolver function uses the following logic:
       - Yes
         - Call the function and return it's return value
 
+### Schema Stitching
+
+Schema stitching is about merging multiple GraphQL schemas into one schema, which may be consumed in a GraphQL client application.
 
 A resolver can return arrays, objects and scalar types, but it has to be defined in the matching type definitions. Resolvers can return a `promise` and  GraphQL waits for the promise to resolve.
 
@@ -75,3 +78,7 @@ A resolver can return arrays, objects and scalar types, but it has to be defined
 A `!` after a field property means it's a `non-nullable` field.
 
 `Arguments can be used to make more fine-grained queries because you an provide them to the GraphQL query.
+
+## Models
+
+Models are passed to the resolver function’s as `context`. The models are your data access layer, which can be sample data, a database, or a third-party API. It’s good practice to pass those things from the outside to keep the resolver functions pure.
